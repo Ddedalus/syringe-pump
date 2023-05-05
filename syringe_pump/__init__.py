@@ -11,7 +11,9 @@ class PumpError(Exception):
     pass
 
 
-class PumpCommandError(Exception):
+class PumpCommandError(PumpError):
+    """Executing a command caused an error to be displayed."""
+
     def __init__(self, message: str, command: str, *args) -> None:
         self.message = message
         self.command = command
@@ -19,6 +21,18 @@ class PumpCommandError(Exception):
 
     def __str__(self) -> str:
         return f"Got {self.message!r} while executing {self.command!r}"
+
+
+class PumpStateError(PumpError):
+    """The pump reported an error state via the prompt."""
+
+    def __init__(self, state: str, command: str, *args: object) -> None:
+        self.state = state
+        self.command = command
+        super().__init__(*args)
+
+    def __str__(self) -> str:
+        return f"Unxpected pump state {self.state!r} after executing {self.command!r}"
 
 
 class Pump(BaseModel):
@@ -52,12 +66,7 @@ class Pump(BaseModel):
 
     async def version(self):
         output = await self._write("version")
-        lines = output.split("\r\n")[:-1]  # skip the prompt line
-        data = {}
-        for line in lines:
-            key, val = line.split(":", 1)
-            data[key] = val
-        return data
+        return _parse_colon_mapping(output)
 
     async def set_infusion_rate(self, rate: float, unit: str = "ml/min"):
         if rate == 0:
@@ -84,11 +93,20 @@ class Pump(BaseModel):
         # TODO: fully handle device number
         output = output.lstrip(_NUMBERS)
 
-        if output.startswith("error"):
+        if "error" in output:
             message = output.split("\r")[1].strip()
             raise PumpCommandError(message, command)
 
         prompt = output.split("\r\n")[-1].lstrip(_NUMBERS)
         if prompt not in [":", ">", "<"]:
-            raise PumpError(f"Unexpected prompt {output}")
+            raise PumpStateError(output, command)
         return output
+
+
+def _parse_colon_mapping(output: str):
+    lines = output.split("\r\n")[:-1]  # skip the prompt line
+    data = {}
+    for line in lines:
+        key, val = line.split(":", 1)
+        data[key] = val.strip()
+    return data
