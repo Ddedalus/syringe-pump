@@ -60,7 +60,9 @@ class Pump(BaseModel):
         return data
 
     async def set_infusion_rate(self, rate: float, unit: str = "ml/min"):
-        return await self._write(f"irate {float(rate):.4} {unit}")
+        if rate == 0:
+            raise PumpError("Infusion rate must be positive!")
+        return await self._write(f"@irate {float(rate):.4} {unit}")
 
     async def set_withdrawal_rate(self, rate: float, unit: str = "ml/min"):
         return await self._write(f"wrate {rate} {unit}")
