@@ -1,8 +1,9 @@
 from pydantic import PrivateAttr
 
 from .exceptions import *
+from .rate import Rate
 from .serial_interface import SerialInterface
-from .syringe import *
+from .syringe import Syringe
 
 
 class Pump(SerialInterface):
@@ -11,6 +12,11 @@ class Pump(SerialInterface):
     """
 
     _syringe: Syringe = PrivateAttr(...)
+    _irate: Rate = PrivateAttr(...)
+
+    @property
+    def infusion_rate(self) -> Rate:
+        return self._irate
 
     @property
     def syringe(self) -> Syringe:
@@ -19,6 +25,7 @@ class Pump(SerialInterface):
     def __init__(self, **data):
         super().__init__(**data)
         self._syringe = Syringe(serial=self.serial)
+        self._irate = Rate(serial=self.serial, letter="i")
 
         super()._prepare_pump()
 
@@ -36,11 +43,6 @@ class Pump(SerialInterface):
     async def version(self):
         output = await self._write("version")
         return _parse_colon_mapping(output)
-
-    async def set_infusion_rate(self, rate: float, unit: str = "ml/min"):
-        if rate == 0:
-            raise PumpError("Infusion rate must be positive!")
-        return await self._write(f"irate {float(rate):.4} {unit}")
 
     async def set_withdrawal_rate(self, rate: float, unit: str = "ml/min"):
         return await self._write(f"wrate {rate} {unit}")

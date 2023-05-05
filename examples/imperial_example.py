@@ -64,16 +64,16 @@ async def tune(pump: Pump):
     await pump.set_brightness(0)  # disable screen to avoid flicker
     for note, beat in zip(notes[start_at:], beats[start_at:]):
         if rate := max_rate * note / A5:
-            await pump.set_infusion_rate(rate)
+            await pump.infusion_rate.set(rate)
             await pump.start()
         else:  # pause between notes
             await pump.stop()
 
-        duration = beat * tempo  # length of note/rest in ms
+        duration = float(beat) * tempo  # length of note/rest in ms
         await asyncio.sleep(duration)  # wait for tone to finish
 
         await pump.stop()  # brief pause between notes
-        await asyncio.sleep(tempo / 10)
+        await asyncio.sleep(tempo / 10.)
 
 
 async def main(pump: Pump):
