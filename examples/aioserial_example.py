@@ -8,10 +8,14 @@ from syringe_pump import Pump
 
 async def main(pump: Pump):
     start = time.time()
+    print(await pump.get_rate_limits())
     print(await pump.start())
     print(time.time() - start, "start")
-    await asyncio.sleep(1)
-    print(time.time() - start, "sleep")
+    for i in range(10):
+        rate = 1 + (i % 2)
+        print(await pump.set_infusion_rate(rate))
+        print("Rate:", rate)
+        await asyncio.sleep(1)
     await pump.stop()
     print(time.time() - start, "stop")
 

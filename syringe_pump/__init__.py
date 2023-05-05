@@ -35,13 +35,15 @@ class Pump(BaseModel):
         super().__init__(**data)
         self.serial.write(b"poll on\r\n")
         output = self.serial.read_until(XON)
+        self.serial.write(b"nvram none\r\n")
+        output = self.serial.read_until(XON)
         # TODO: verify the output
 
     async def start(self):
         await self._write("run")
 
     async def stop(self):
-        await self._write("stop")
+        await self._write("stp")
 
     async def set_brightness(self, brightness: int):
         if brightness < 0 or brightness > 100:
@@ -57,6 +59,18 @@ class Pump(BaseModel):
             data[key] = val
         return data
 
+    async def set_infusion_rate(self, rate: float, unit: str = "ml/min"):
+        return await self._write(f"irate {float(rate):.4} {unit}")
+
+    async def set_withdrawal_rate(self, rate: float, unit: str = "ml/min"):
+        return await self._write(f"wrate {rate} {unit}")
+
+    async def get_rate_limits(self):
+        return await self._write("irate lim")
+
+    async def get_infusion_rate(self):
+        return await self._write("irate")
+
     async def _write(self, command: str):
         await self.serial.write_async((command + "\r\n").encode())
         return await self._parse_prompt(command=command)
@@ -68,7 +82,7 @@ class Pump(BaseModel):
         # TODO: fully handle device number
         output = output.lstrip(_NUMBERS)
 
-        if output.startswith("Command error"):
+        if output.startswith("error"):
             message = output.split("\r")[1].strip()
             raise PumpCommandError(message, command)
 
