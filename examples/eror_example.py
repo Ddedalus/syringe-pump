@@ -20,7 +20,7 @@ async def main(pump: Pump):
     print(await pump.version())
 
     await should_raise(pump._write("invalid"), PumpCommandError)
-    await should_raise(pump.set_infusion_rate(1, unit="bs"), PumpCommandError)
+    await should_raise(pump.set_infusion_rate(1.0, unit="bs"), PumpCommandError)
     print(await pump.syringe.get_diameter())
 
 
