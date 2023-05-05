@@ -1,4 +1,12 @@
-_External controller for Legato syringe pump_
+_External controller for Legato 100 syringe pump_
+
+# Installation
+
+## This package
+```
+poetry install
+```
+
 
 # Usage
 TBD
