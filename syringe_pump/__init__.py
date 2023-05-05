@@ -1,5 +1,7 @@
+import re
+
 import aioserial
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 XON = b"\x11"
 _NUMBERS = "0123456789"
@@ -35,23 +37,68 @@ class PumpStateError(PumpError):
         return f"Unxpected pump state {self.state!r} after executing {self.command!r}"
 
 
-class Pump(BaseModel):
-    """High-level interface for the Legato 100 syringe pump.
-    Upon initialisation, sets poll mode to on, making prompts parsable.
-    """
+class BaseInterface(BaseModel):
+    """Provides wrapper methods to send commands and receive pump responses."""
 
     serial: aioserial.AioSerial
 
     class Config:
         arbitrary_types_allowed = True
 
+    async def _write(self, command: str):
+        await self.serial.write_async((command + "\r\n").encode())
+        return await self._parse_prompt(command=command)
+
+    async def _parse_prompt(self, command: str = "") -> str:
+        # relies on poll mode being on
+        raw_output = await self.serial.read_until_async(XON)
+        output = raw_output.rstrip(XON).strip().decode()
+        # TODO: fully handle device number
+        output = output.lstrip(_NUMBERS)
+
+        if "error" in output:
+            message = output.split("\r")[1].strip()
+            raise PumpCommandError(message, command)
+
+        prompt = output.split("\r\n")[-1].lstrip(_NUMBERS)
+        if prompt not in [":", ">", "<"]:
+            raise PumpStateError(output, command)
+        return output
+
+
+class Syringe(BaseInterface):
+    """Expose methods to manage syringe settings."""
+
+    async def get_diameter(self) -> float:
+        """Syringe diameter in mm."""
+        output = await self._write("diameter")
+        match = re.match(r"(\d\d:)?(\d*\.\d+) mm", output)
+        if not match:
+            raise PumpCommandError(output, "diameter")
+        return float(match.group(2))
+
+
+class Pump(BaseInterface):
+    """High-level interface for the Legato 100 syringe pump.
+    Upon initialisation, sets poll mode to on, making prompts parsable.
+    """
+
+    _syringe: Syringe = PrivateAttr(...)
+
+    @property
+    def syringe(self) -> Syringe:
+        return self._syringe
+
     def __init__(self, **data):
         super().__init__(**data)
+        self._syringe = Syringe(serial=self.serial)
+
         self.serial.write(b"poll on\r\n")
-        output = self.serial.read_until(XON)
+        self.serial.read_until(XON)
         self.serial.write(b"nvram none\r\n")
-        output = self.serial.read_until(XON)
+        self.serial.read_until(XON)
         # TODO: verify the output
+        # TODO: execute this async on first command instead
 
     async def start(self):
         await self._write("run")
@@ -81,26 +128,6 @@ class Pump(BaseModel):
 
     async def get_infusion_rate(self):
         return await self._write("irate")
-
-    async def _write(self, command: str):
-        await self.serial.write_async((command + "\r\n").encode())
-        return await self._parse_prompt(command=command)
-
-    async def _parse_prompt(self, command: str = "") -> str:
-        # relies on poll mode being on
-        raw_output = await self.serial.read_until_async(XON)
-        output = raw_output.rstrip(XON).strip().decode()
-        # TODO: fully handle device number
-        output = output.lstrip(_NUMBERS)
-
-        if "error" in output:
-            message = output.split("\r")[1].strip()
-            raise PumpCommandError(message, command)
-
-        prompt = output.split("\r\n")[-1].lstrip(_NUMBERS)
-        if prompt not in [":", ">", "<"]:
-            raise PumpStateError(output, command)
-        return output
 
 
 def _parse_colon_mapping(output: str):
