@@ -1,4 +1,5 @@
 import asyncio
+import random
 
 import pytest
 
@@ -37,6 +38,11 @@ async def test_infusion_rate(pump: Pump):
     with pytest.raises(PumpError):
         await irate.set(1.0, "nonsense")
 
-    await irate.set(1.0, "mL/min")
-    rate = await irate.get()
-    assert rate == 1.0
+    rate = random.uniform(0.1, 2.0)
+    await irate.set(rate, "ml/min")
+    set_rate = await irate.get()
+    assert int(set_rate * 1000) == int(rate * 1000)  # round to 3 decimal places
+
+    await irate.set(1.0, "ml/min")
+    set_rate = await irate.get()
+    assert set_rate == 1.0  # special case where pump returns 1 instead of 1.0
