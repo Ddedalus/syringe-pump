@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Literal
 
 import aioserial
-from pydantic import PrivateAttr
+from quantiphy import Quantity
 
 from .exceptions import *
 from .rate import Rate

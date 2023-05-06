@@ -11,17 +11,19 @@ class Syringe(SerialInterface):
     """Expose methods to manage syringe settings."""
 
     async def get_diameter(self) -> Quantity:
-        """Syringe diameter in mm."""
+        """Get syringe diameter configured in the pump."""
         output = await self._write("diameter")
         diameter, _ = extract_quantity(output.message[0])
         return diameter
 
-    async def set_diameter(self, diameter: float):
+    async def set_diameter(self, diameter: float) -> Quantity:
         """Set syringe diameter in mm."""
-        await self._write(f"diameter {diameter:.4}")
+        response = await self._write(f"diameter {diameter:.4}")
+        diameter, _ = extract_quantity(response.message[0])
+        return diameter
 
     async def get_volume(self) -> Quantity:
-        """Syringe volume in ml."""
+        """Get syringe volume configured in the pump."""
         output = await self._write("volume")
         volume, _ = extract_quantity(output.message[0])
         return volume
