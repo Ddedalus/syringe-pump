@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 from .exceptions import *
 from .serial_interface import SerialInterface
@@ -31,3 +32,12 @@ class Syringe(SerialInterface):
     async def set_volume(self, volume: float, unit: str = "ml"):
         """Set syringe volume in ml or ul."""
         await self._write(f"volume {volume:.4} {unit}")
+
+    async def set_manufacturer(
+        self, manufacturer: str, volume: Optional[float] = None, unit: str = "ml"
+    ):
+        """Set syringe manufacturer and volume in ml or ul."""
+        if volume is not None:
+            await self._write(f"syrmanu {manufacturer} {volume:.4} {unit}")
+        else:
+            await self._write(f"syrmanu {manufacturer}")

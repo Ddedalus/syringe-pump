@@ -1,3 +1,4 @@
+import aioserial
 from pydantic import PrivateAttr
 
 from .exceptions import *
@@ -11,21 +12,23 @@ class Pump(SerialInterface):
     Upon initialisation, sets poll mode to on, making prompts parsable.
     """
 
-    _syringe: Syringe = PrivateAttr(...)
-    _irate: Rate = PrivateAttr(...)
-
     @property
     def infusion_rate(self) -> Rate:
         return self._irate
 
     @property
+    def withdrawal_rate(self) -> Rate:
+        return self._wrate
+
+    @property
     def syringe(self) -> Syringe:
         return self._syringe
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def __init__(self, *, serial: aioserial.AioSerial):
+        super().__init__(serial=serial)
         self._syringe = Syringe(serial=self.serial)
         self._irate = Rate(serial=self.serial, letter="i")
+        self._wrate = Rate(serial=self.serial, letter="w")
 
         super()._prepare_pump()
 
@@ -46,12 +49,6 @@ class Pump(SerialInterface):
 
     async def set_withdrawal_rate(self, rate: float, unit: str = "ml/min"):
         return await self._write(f"wrate {rate} {unit}")
-
-    async def get_rate_limits(self):
-        return await self._write("irate lim")
-
-    async def get_infusion_rate(self):
-        return await self._write("irate")
 
 
 def _parse_colon_mapping(output: str):

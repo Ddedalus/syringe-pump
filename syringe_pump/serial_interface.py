@@ -1,5 +1,4 @@
 import aioserial
-from pydantic import BaseModel
 
 from .exceptions import *
 
@@ -7,13 +6,11 @@ XON = b"\x11"
 _NUMBERS = "0123456789"
 
 
-class SerialInterface(BaseModel):
+class SerialInterface:
     """Provides wrapper methods to send commands and receive pump responses."""
 
-    serial: aioserial.AioSerial
-
-    class Config:
-        arbitrary_types_allowed = True
+    def __init__(self, serial: aioserial.AioSerial) -> None:
+        self.serial = serial
 
     async def _write(self, command: str):
         await self.serial.write_async((command + "\r\n").encode())

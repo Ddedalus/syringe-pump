@@ -1,6 +1,8 @@
 import re
 from typing import Tuple
 
+import aioserial
+
 from .exceptions import *
 from .serial_interface import SerialInterface
 
@@ -8,7 +10,9 @@ from .serial_interface import SerialInterface
 class Rate(SerialInterface):
     """Expose methods to manage a rate of infusion or withdrawal."""
 
-    letter: str = "i"
+    def __init__(self, serial: aioserial.AioSerial, letter: str = "i") -> None:
+        super().__init__(serial=serial)
+        self.letter = letter
 
     async def get(self) -> float:
         """Get the currently set rate of infusion or withdrawal in ml/min."""
