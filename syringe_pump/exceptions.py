@@ -27,6 +27,6 @@ class PumpStateError(PumpCommandError):
 
     def __str__(self) -> str:
         return (
-            f"Unxpected pump state {self.response.prompt!r} "
+            f"Unexpected pump state {self.response.prompt!r} "
             f"after executing {self.response.command!r}"
         )

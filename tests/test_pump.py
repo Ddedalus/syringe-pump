@@ -44,6 +44,19 @@ async def test_force(pump: Pump):
     assert new_force == force
 
 
+async def test_address(pump: Pump):
+    with pytest.raises(ValueError):
+        await pump.set_address(-1)
+    with pytest.raises(ValueError):
+        await pump.set_address(256)
+
+    address = random.randint(1, 25)
+    try:
+        new_address = await pump.set_address(address)
+        assert new_address == address
+    finally:
+        await pump.set_address(0)
+
 @pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
 def rate(request, pump: Pump):
     return getattr(pump, request.param)

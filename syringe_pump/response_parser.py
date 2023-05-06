@@ -27,17 +27,16 @@ class PumpResponse(BaseModel):
 
         if not lines:
             raise PumpError("No response from pump")
-
-        self.prompt = lines[-1]
+        if lines[-1]:  # there is prompt in last line, because there is no address
+            self.prompt = lines[-1]
         self.message = lines[:-1]
         return self
 
     def _strip_address(self, line: str) -> str:
-        # TODO: the prompt line may not have a colon
-        if re.match(r"\d{1,2}:", line):
-            address, content = line.split(":", 1)
-            self.address = int(address)
-            return content
+        if match := re.match(r"(\d{1,2})(:|[><T]\*?|\*)(.*)", line):
+            self.address = int(match.group(1))
+            self.prompt = match.group(2)
+            return match.group(3)
         return line
 
 

@@ -58,6 +58,12 @@ class Pump(SerialInterface):
         output = await self._write("force")
         return int(output.message[0].strip("%"))
 
+    async def set_address(self, address: int):
+        if address < 0 or address > 99:
+            raise ValueError("Address must be integer between 0 and 99")
+        output = await self._write(f"addr {address}")
+        return output.address
+
 
 def _parse_colon_mapping(lines: List[str]):
     data = {}
