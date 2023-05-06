@@ -66,7 +66,7 @@ async def tune(pump: Pump):
     for note, beat in zip(notes[start_at:], beats[start_at:]):
         if rate := max_rate * note / A5:
             await pump.infusion_rate.set(rate)
-            await pump.start()
+            await pump.run()
         else:  # pause between notes
             await pump.stop()
 

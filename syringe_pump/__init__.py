@@ -1,4 +1,5 @@
-from typing import List
+from datetime import datetime
+from typing import List, Literal
 
 import aioserial
 from pydantic import PrivateAttr
@@ -34,8 +35,13 @@ class Pump(SerialInterface):
 
         super()._prepare_pump()
 
-    async def start(self):
-        await self._write("run")
+    async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
+        if direction == "infuse":
+            await self._write("irun")
+        elif direction == "withdraw":
+            await self._write("wrun")
+        else:
+            raise ValueError("Direction must be 'infuse' or 'withdraw'")
 
     async def stop(self):
         await self._write("stp")
@@ -63,6 +69,12 @@ class Pump(SerialInterface):
             raise ValueError("Address must be integer between 0 and 99")
         output = await self._write(f"addr {address}")
         return output.address
+
+    async def set_time(self):
+        # Accepted format:  mm/dd/yy hh:mm:ss
+        now = datetime.now().strftime("%m/%d/%y %H:%M:%S")
+        response = await self._write(f"time {now}")
+        return response.message[0]
 
 
 def _parse_colon_mapping(lines: List[str]):

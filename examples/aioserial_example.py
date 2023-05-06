@@ -9,7 +9,7 @@ from syringe_pump import Pump
 async def main(pump: Pump):
     start = time.time()
     print(await pump.get_rate_limits())
-    print(await pump.start())
+    print(await pump.run())
     print(time.time() - start, "start")
     for i in range(10):
         rate = 1 + (i % 2)

@@ -18,9 +18,16 @@ async def test_pump_version(pump: Pump):
 
 @pytest.mark.skip(reason="Don't annoy the pump")
 async def test_start_stop(pump: Pump):
-    await pump.start()
-    await asyncio.sleep(0.1)
-    await pump.stop()
+    with pytest.raises(ValueError):
+        await pump.run(direction="invalid")  # type: ignore
+
+    try:
+        await pump.run()
+        await asyncio.sleep(0.1)
+        await pump.run(direction="withdraw")
+        await asyncio.sleep(0.1)
+    finally:
+        await pump.stop()
 
 
 async def test_set_brightness(pump: Pump):
@@ -56,6 +63,12 @@ async def test_address(pump: Pump):
         assert new_address == address
     finally:
         await pump.set_address(0)
+
+
+async def test_time(pump: Pump):
+    time = await pump.set_time()
+    assert len(time) == len("05/06/23 11:29:01 PM")
+
 
 @pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
 def rate(request, pump: Pump):
