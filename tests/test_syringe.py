@@ -14,14 +14,32 @@ def syringe(pump: Pump):
 
 
 async def test_syringe_volume(syringe: Syringe):
-    new_volume = random.uniform(0.1, 2)
+    new_volume = random.uniform(8, 20)
     await syringe.set_volume(Quantity(f"{new_volume} ml"))
     read_volume = await syringe.get_volume()
     assert round(read_volume, 3) == round(new_volume / 1000, 3)
 
 
 async def test_syringe_diameter(syringe: Syringe):
-    new_diameter = random.uniform(1, 10)
+    new_diameter = round(random.uniform(7, 12), 3)
     await syringe.set_diameter(new_diameter)
     read_diameter = await syringe.get_diameter()
     assert round(read_diameter, 3) == round(new_diameter / 1000, 3)
+
+
+@pytest.mark.skip("Don't annoy the pump. No easy way to go back to cusotm O.o")
+async def test_syringe_manufacturer(syringe: Syringe):
+    with pytest.raises(ValueError):
+        await syringe.set_manufacturer(Syringe.Manufacturer.sst, Quantity("1 ml"))
+
+    response = await syringe.set_manufacturer(
+        Syringe.Manufacturer.sst, Quantity("20 ml")
+    )
+    assert not response.message  # pump gives no inofrmation on success
+
+    (manu, volume, diam) = await syringe.get_manufacturer()
+
+    # This is neither code nor full name; highly inconsistent
+    assert manu == "Stainless"
+    assert diam == 0.01913  # This appears to be computed / known by the pump
+    assert volume == 0.02
