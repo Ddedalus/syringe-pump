@@ -2,9 +2,6 @@ import aioserial
 
 from .exceptions import *
 
-XON = b"\x11"
-_NUMBERS = "0123456789"
-
 
 class SerialInterface:
     """Provides wrapper methods to send commands and receive pump responses."""
@@ -17,20 +14,18 @@ class SerialInterface:
         await self.serial.write_async(f"@{command}\r\n".encode())
         return await self._parse_prompt(command=command)
 
-    async def _parse_prompt(self, command: str = "") -> str:
+    async def _parse_prompt(self, command: str = "") -> PumpResponse:
         # relies on poll mode being on
         raw_output = await self.serial.read_until_async(XON)
-        output = raw_output.rstrip(XON).strip().decode()
+        response = PumpResponse.from_output(raw_output, command)
         # TODO: handle device number
 
-        if "error" in output:
-            message = output.split("\r")[1].strip()
-            raise PumpCommandError(message, command)
+        if response.message and "error" in response.message[0]:
+            raise PumpCommandError(response)
 
-        prompt = output.split("\r\n")[-1].lstrip(_NUMBERS)
-        if prompt not in [":", ">", "<"]:
-            raise PumpStateError(output, command)
-        return output
+        if response.prompt not in [":", ">", "<"]:
+            raise PumpStateError(response)
+        return response
 
     def _prepare_pump(self):
         self.serial.write(b"poll on\r\n")

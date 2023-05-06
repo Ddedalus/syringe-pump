@@ -18,7 +18,7 @@ class Rate(SerialInterface):
         """Get the currently set rate of infusion or withdrawal in ml/min."""
         command = f"{self.letter}rate"
         output = await self._write(command)
-        match = re.match(r"(?:\d\d:)?(\d*\.?\d+) (ul|ml)/min", output)
+        match = re.match(r"(\d*\.?\d+) (ul|ml)/min", output.message[0])
         if not match:
             raise PumpCommandError(output, command)
         per_unit = 1.0 if match.group(2) == "ml" else 1e-3
@@ -35,7 +35,7 @@ class Rate(SerialInterface):
         output = await self._write(command)
         # e.g. .0404 nl/min to 26.0035 ml/min
         match = re.match(
-            r"(?:\d\d:)?(\d*\.\d+) (nl|ul|ml)/min to (\d*\.\d+) (ul|ml)/min", output
+            r"(\d*\.\d+) (nl|ul|ml)/min to (\d*\.\d+) (ul|ml)/min", output.message[0]
         )
         if not match:
             raise PumpCommandError(output, command)
@@ -49,7 +49,7 @@ class Rate(SerialInterface):
     async def get_ramp(self) -> float:
         """Get the the target infusion rate while ramping in ml/min."""
         output = await self._write(f"{self.letter}ramp")
-        match = re.match(r"(?:\d\d:)?(\d*\.\d+) (ul|ml)/min", output)
+        match = re.match(r"(\d*\.\d+) (ul|ml)/min", output.message[0])
         if not match:
             raise PumpCommandError(output, f"{self.letter}ramp")
         per_unit = 1.0 if match.group(3) == "ml" else 1e-3

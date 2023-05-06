@@ -45,11 +45,10 @@ class Pump(SerialInterface):
 
     async def version(self):
         output = await self._write("version")
-        return _parse_colon_mapping(output)
+        return _parse_colon_mapping(output.message)
 
 
-def _parse_colon_mapping(output: str):
-    lines = output.split("\r\n")[:-1]  # skip the prompt line
+def _parse_colon_mapping(lines: List[str]):
     data = {}
     for line in lines:
         key, val = line.split(":", 1)

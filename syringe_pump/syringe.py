@@ -11,7 +11,7 @@ class Syringe(SerialInterface):
     async def get_diameter(self) -> float:
         """Syringe diameter in mm."""
         output = await self._write("diameter")
-        match = re.match(r"(\d\d:)?(\d*\.\d+) mm", output)
+        match = re.match(r"(\d*\.\d+) mm", output.message[0])
         if not match:
             raise PumpCommandError(output, "diameter")
         return float(match.group(2))
@@ -23,7 +23,7 @@ class Syringe(SerialInterface):
     async def get_volume(self) -> float:
         """Syringe volume in ml."""
         output = await self._write("volume")
-        match = re.match(r"(\d\d:)?(\d*\.\d+) (ul|ml)", output)
+        match = re.match(r"(\d*\.\d+) (ul|ml)", output.message[0])
         if not match:
             raise PumpCommandError(output, "volume")
         per_unit = 1.0 if match.group(3) == "ml" else 1e-3
