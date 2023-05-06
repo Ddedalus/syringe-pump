@@ -35,15 +35,15 @@ class Rate(SerialInterface):
         output = await self._write(command)
         # e.g. .0404 nl/min to 26.0035 ml/min
         match = re.match(
-            r"(?:\d\d:)?(\d*\.\d+) (ul|ml)/min to (\d*\.\d+) (ul|ml)/min", output
+            r"(?:\d\d:)?(\d*\.\d+) (nl|ul|ml)/min to (\d*\.\d+) (ul|ml)/min", output
         )
         if not match:
             raise PumpCommandError(output, command)
-        per_unit_min = 1.0 if match.group(1) == "ml" else 1e-3
-        per_unit_max = 1.0 if match.group(3) == "ml" else 1e-3
+        per_unit_min = 1.0 if match.group(2) == "ml" else 1e-3
+        per_unit_max = 1.0 if match.group(4) == "ml" else 1e-3
         return (
-            float(match.group(2)) * per_unit_min,
-            float(match.group(4)) * per_unit_max,
+            float(match.group(1)) * per_unit_min,
+            float(match.group(3)) * per_unit_max,
         )
 
     async def get_ramp(self) -> float:

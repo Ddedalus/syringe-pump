@@ -5,6 +5,7 @@ import pytest
 
 from syringe_pump import Pump
 from syringe_pump.exceptions import PumpError
+from syringe_pump.rate import Rate
 
 
 async def test_pump_version(pump: Pump):
@@ -29,22 +30,36 @@ async def test_set_brightness(pump: Pump):
     await pump.set_brightness(15)
 
 
-@pytest.mark.parametrize("rate_name", ["infusion_rate", "withdrawal_rate"])
-async def test_infusion_rate(pump: Pump, rate_name: str):
-    irate = getattr(pump, rate_name)
+@pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
+def rate(request, pump: Pump):
+    return getattr(pump, request.param)
+
+
+async def test_rate_error(rate: Rate):
+    with pytest.raises(PumpError):
+        await rate.set(0)
 
     with pytest.raises(PumpError):
-        await irate.set(0)
+        await rate.set(1.0, "nonsense")
 
-    with pytest.raises(PumpError):
-        await irate.set(1.0, "nonsense")
 
-    rate = random.uniform(0.1, 2.0)
-    await irate.set(rate, "ml/min")
-    set_rate = await irate.get()
-    assert round(set_rate, 3) == round(rate, 3)
+async def test_rate_set_get(rate: Rate):
+    new_rate = random.uniform(0.1, 2.0)
+    await rate.set(new_rate, "ml/min")
+    read_rate = await rate.get()
+    assert round(read_rate, 3) == round(new_rate, 3)
 
+
+async def test_rate_set_get_int(rate: Rate):
     # special case where pump returns 1 instead of 1.0
-    await irate.set(1.0, "ml/min")
-    set_rate = await irate.get()
-    assert set_rate == 1.0
+    await rate.set(1.0, "ml/min")
+    read_rate = await rate.get()
+    assert read_rate == 1.0
+
+
+async def test_rate_limits(rate: Rate):
+    low, high = await rate.get_limits()
+    assert low < high
+    assert low > 0
+    assert high > 1
+    # assert low < 1e-3
