@@ -49,6 +49,15 @@ class Pump(SerialInterface):
         output = await self._write("version")
         return _parse_colon_mapping(output.message)
 
+    async def set_force(self, force: int):
+        if force < 0 or force > 100:
+            raise ValueError("Force must be integer between 0 and 100")
+        await self._write(f"force {force}")
+
+    async def get_force(self):
+        output = await self._write("force")
+        return int(output.message[0].strip("%"))
+
 
 def _parse_colon_mapping(lines: List[str]):
     data = {}

@@ -1,4 +1,5 @@
 """ Play the Iperial March by changing motor speed. """
+# Adapted from https://www.instructables.com/Music-With-Servo-Motor/
 import asyncio
 
 import aioserial
@@ -73,7 +74,7 @@ async def tune(pump: Pump):
         await asyncio.sleep(duration)  # wait for tone to finish
 
         await pump.stop()  # brief pause between notes
-        await asyncio.sleep(tempo / 10.)
+        await asyncio.sleep(tempo / 10.0)
 
 
 async def main(pump: Pump):

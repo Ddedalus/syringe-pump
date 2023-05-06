@@ -32,6 +32,18 @@ async def test_set_brightness(pump: Pump):
     await pump.set_brightness(15)
 
 
+async def test_force(pump: Pump):
+    with pytest.raises(ValueError):
+        await pump.set_force(-1)
+    with pytest.raises(ValueError):
+        await pump.set_force(150)
+
+    force = random.randint(15, 25)
+    await pump.set_force(force)
+    new_force = await pump.get_force()
+    assert new_force == force
+
+
 @pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
 def rate(request, pump: Pump):
     return getattr(pump, request.param)

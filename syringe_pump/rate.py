@@ -32,8 +32,7 @@ class Rate(SerialInterface):
     async def get_limits(self) -> Tuple[Quantity, Quantity]:
         """Get the minimum and maximum rate of infusion or withdrawal in ml/min."""
         command = f"{self.letter}rate lim"
-        output = await self._write(command)
-        # e.g. .0404 nl/min to 26.0035 ml/min
+        output = await self._write(command)  # e.g. .0404 nl/min to 26.0035 ml/min
         low, line = extract_quantity(output.message[0])
         line = extract_string(line, "to")
         high, _ = extract_quantity(line)
