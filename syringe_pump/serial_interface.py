@@ -1,6 +1,7 @@
 import aioserial
 
 from .exceptions import *
+from .response_parser import XON, PumpResponse
 
 
 class SerialInterface:
@@ -18,7 +19,6 @@ class SerialInterface:
         # relies on poll mode being on
         raw_output = await self.serial.read_until_async(XON)
         response = PumpResponse.from_output(raw_output, command)
-        # TODO: handle device number
 
         if response.message and "error" in response.message[0]:
             raise PumpCommandError(response)
