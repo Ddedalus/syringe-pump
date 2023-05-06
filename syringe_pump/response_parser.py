@@ -1,7 +1,8 @@
 import re
-from typing import List
+from typing import List, Tuple
 
 from pydantic import BaseModel, Field
+from quantiphy import Quantity
 
 from .exceptions import PumpError
 
@@ -38,3 +39,20 @@ class PumpResponse(BaseModel):
             self.address = int(address)
             return content
         return line
+
+
+def extract_quantity(line: str) -> Tuple[Quantity, str]:
+    """Extract a value and unit from a line of text."""
+    try:
+        value, unit, *rest = line.split(" ")
+        return Quantity(f"{value} {unit}"), " ".join(rest).strip()
+    except Exception as e:
+        raise PumpError(f"Could not extract value from {line!r}") from e
+
+
+def extract_string(line: str, prefix: str) -> str:
+    """Extract a string from a line of text."""
+    try:
+        return line.split(prefix, 1)[1].strip()
+    except Exception as e:
+        raise PumpError(f"Could not extract string from {line!r}") from e

@@ -2,6 +2,7 @@ import asyncio
 import random
 
 import pytest
+from quantiphy import Quantity
 
 from syringe_pump import Pump
 from syringe_pump.exceptions import PumpError
@@ -27,6 +28,7 @@ async def test_set_brightness(pump: Pump):
         await pump.set_brightness(-1)
     with pytest.raises(PumpError):
         await pump.set_brightness(150)
+
     await pump.set_brightness(15)
 
 
@@ -36,30 +38,29 @@ def rate(request, pump: Pump):
 
 
 async def test_rate_error(rate: Rate):
-    with pytest.raises(PumpError):
-        await rate.set(0)
+    with pytest.raises(ValueError):
+        await rate.set(Quantity(0, "l/min"))
 
-    with pytest.raises(PumpError):
-        await rate.set(1.0, "nonsense")
+    with pytest.raises(ValueError):
+        await rate.set(Quantity(1.0, "nonsense"))
 
 
 async def test_rate_set_get(rate: Rate):
-    new_rate = random.uniform(0.1, 2.0)
-    await rate.set(new_rate, "ml/min")
+    new_rate = random.uniform(1e-3, 2e-2)
+    await rate.set(Quantity(f"{new_rate} l/min"))
     read_rate = await rate.get()
     assert round(read_rate, 3) == round(new_rate, 3)
 
 
 async def test_rate_set_get_int(rate: Rate):
     # special case where pump returns 1 instead of 1.0
-    await rate.set(1.0, "ml/min")
+    await rate.set(Quantity("1.0 ml/min"))
     read_rate = await rate.get()
-    assert read_rate == 1.0
+    assert read_rate == 0.001
 
 
 async def test_rate_limits(rate: Rate):
     low, high = await rate.get_limits()
     assert low < high
-    assert low > 0
-    assert high > 1
-    # assert low < 1e-3
+    assert 0 < low < 1e-6
+    assert 1e-3 < high
