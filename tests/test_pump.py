@@ -29,8 +29,9 @@ async def test_set_brightness(pump: Pump):
     await pump.set_brightness(15)
 
 
-async def test_infusion_rate(pump: Pump):
-    irate = pump.infusion_rate
+@pytest.mark.parametrize("rate_name", ["infusion_rate", "withdrawal_rate"])
+async def test_infusion_rate(pump: Pump, rate_name: str):
+    irate = getattr(pump, rate_name)
 
     with pytest.raises(PumpError):
         await irate.set(0)
@@ -41,8 +42,9 @@ async def test_infusion_rate(pump: Pump):
     rate = random.uniform(0.1, 2.0)
     await irate.set(rate, "ml/min")
     set_rate = await irate.get()
-    assert int(set_rate * 1000) == int(rate * 1000)  # round to 3 decimal places
+    assert round(set_rate, 3) == round(rate, 3)
 
+    # special case where pump returns 1 instead of 1.0
     await irate.set(1.0, "ml/min")
     set_rate = await irate.get()
-    assert set_rate == 1.0  # special case where pump returns 1 instead of 1.0
+    assert set_rate == 1.0
