@@ -47,9 +47,6 @@ class Pump(SerialInterface):
         output = await self._write("version")
         return _parse_colon_mapping(output)
 
-    async def set_withdrawal_rate(self, rate: float, unit: str = "ml/min"):
-        return await self._write(f"wrate {rate} {unit}")
-
 
 def _parse_colon_mapping(output: str):
     lines = output.split("\r\n")[:-1]  # skip the prompt line

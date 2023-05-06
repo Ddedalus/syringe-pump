@@ -17,11 +17,11 @@ class Rate(SerialInterface):
     async def get(self) -> float:
         """Get the currently set rate of infusion or withdrawal in ml/min."""
         output = await self._write(f"{self.letter}rate")
-        match = re.match(r"(?:\d\d:)?(\d*\.\d+) (ul|ml)/min", output)
+        match = re.match(r"(?:\d\d:)?(\d*\.?\d+) (ul|ml)/min", output)
         if not match:
             raise PumpCommandError(output, f"{self.letter}rate")
-        per_unit = 1.0 if match.group(3) == "ml" else 1e-3
-        return float(match.group(2)) * per_unit
+        per_unit = 1.0 if match.group(2) == "ml" else 1e-3
+        return float(match.group(1)) * per_unit
 
     async def set(self, rate: float, unit: str = "ml/min"):
         if rate <= 0.0:

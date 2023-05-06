@@ -13,15 +13,15 @@ class SerialInterface:
         self.serial = serial
 
     async def _write(self, command: str):
-        await self.serial.write_async((command + "\r\n").encode())
+        # TODO: configure whether screen is refreshed on command
+        await self.serial.write_async(f"@{command}\r\n".encode())
         return await self._parse_prompt(command=command)
 
     async def _parse_prompt(self, command: str = "") -> str:
         # relies on poll mode being on
         raw_output = await self.serial.read_until_async(XON)
         output = raw_output.rstrip(XON).strip().decode()
-        # TODO: fully handle device number
-        output = output.lstrip(_NUMBERS)
+        # TODO: handle device number
 
         if "error" in output:
             message = output.split("\r")[1].strip()
