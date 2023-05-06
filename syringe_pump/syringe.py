@@ -16,22 +16,20 @@ class Syringe(SerialInterface):
         diameter, _ = extract_quantity(output.message[0])
         return diameter
 
-    async def set_diameter(self, diameter: float) -> Quantity:
+    async def set_diameter(self, diameter: float):
         """Set syringe diameter in mm."""
-        response = await self._write(f"diameter {diameter:.4}")
-        diameter, _ = extract_quantity(response.message[0])
-        return diameter
+        return await self._write(f"diameter {diameter:.4}")
 
     async def get_volume(self) -> Quantity:
         """Get syringe volume configured in the pump."""
-        output = await self._write("volume")
+        output = await self._write("svolume")
         volume, _ = extract_quantity(output.message[0])
         return volume
 
     async def set_volume(self, volume: Quantity):
         """Set syringe volume."""
         _check_volume(volume)
-        await self._write(f"volume {volume:.4}")
+        await self._write(f"svolume {volume:.4}")
 
     async def set_manufacturer(
         self, manufacturer: str, volume: Optional[Quantity] = None
