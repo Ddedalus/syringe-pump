@@ -1,6 +1,7 @@
 import re
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple
 
+from pydantic import BaseModel
 from quantiphy import Quantity
 
 from syringe_pump.response_parser import extract_quantity, extract_string
@@ -9,6 +10,12 @@ from .exceptions import *
 
 if TYPE_CHECKING:
     from .pump import Pump
+
+
+class RateRampInfo(BaseModel):
+    start: Quantity
+    end: Quantity
+    duration: float
 
 
 class Rate:
@@ -39,14 +46,30 @@ class Rate:
         high, _ = extract_quantity(line)
         return low, high
 
-    async def get_ramp(self) -> float:
-        """Get the the target infusion rate while ramping in ml/min."""
+    async def get_ramp(self) -> Optional[RateRampInfo]:
+        """Get information about current ramp, i.e. linear change of pump speed"""
         output = await self._pump._write(f"{self.letter}ramp")
-        match = re.match(r"(\d*\.\d+) (ul|ml)/min", output.message[0])
-        if not match:
-            raise PumpCommandError(output, f"{self.letter}ramp")
-        per_unit = 1.0 if match.group(3) == "ml" else 1e-3
-        return float(match.group(2)) * per_unit
+        if "Ramp not set up." in output.message[0]:
+            return None
+        start, line = extract_quantity(output.message[0])
+        line = extract_string(line, "to")
+        end, line = extract_quantity(line)
+        line = extract_string(line, "in")
+        duration, _ = extract_quantity(line)
+        return RateRampInfo(start=start, end=end, duration=float(duration))
+
+    async def set_ramp(self, start: Quantity, end: Quantity, duration: float):
+        """Set up a linear change of pump speed, i.e. a ramp."""
+        _check_rate(start)
+        _check_rate(end)
+        if duration <= 0:
+            raise ValueError("Duration must be positive")
+        command = f"{self.letter}ramp {start:.4} {end:.4} {float(duration):.4}"
+        await self._pump._write(command)
+
+    async def reset_ramp(self):
+        """Reset the ramp by clearing target time."""
+        return await self._pump._write(f"cttime")
 
 
 def _check_rate(rate: Quantity):
