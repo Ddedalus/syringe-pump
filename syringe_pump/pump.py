@@ -17,6 +17,9 @@ class PumpVersion(BaseModel):
     serial_number: str = Field(default=..., alias="Serial number")
 
 
+QS_MODE_CODE = Literal["i", "w", "iw", "wi"]
+
+
 class Pump(SerialInterface):
     """High-level interface for the Legato 100 syringe pump.
     Upon initialisation, sets poll mode to on, making prompts parsable.
@@ -79,6 +82,15 @@ class Pump(SerialInterface):
         now = datetime.now().strftime("%m/%d/%y %H:%M:%S")
         response = await self._write(f"time {now}")
         return response.message[0]
+
+    async def set_mode(self, mode: QS_MODE_CODE = "iw"):
+        """Set the Quick Start mode, enabling / disabling infusion and withdrawal."""
+        return await self._write(f"load qs {mode}")
+
+    async def get_mode(self) -> str:
+        """Get the current pump mode."""
+        output = await self._write("load")
+        return output.message[0]
 
 
 def _parse_colon_mapping(lines: List[str]):

@@ -1,7 +1,16 @@
+import asyncio
+
 import aioserial
 import pytest
 
 from syringe_pump import Pump
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest.fixture(scope="session")
@@ -10,5 +19,7 @@ def serial():
 
 
 @pytest.fixture(scope="session")
-def pump(serial):
-    return Pump(serial=serial)
+async def pump(serial):
+    pump = Pump(serial=serial)
+    await pump.set_mode("iw")
+    return pump

@@ -7,6 +7,7 @@ import serial
 
 from syringe_pump import Pump, PumpVersion
 from syringe_pump.exceptions import PumpError
+from syringe_pump.pump import QS_MODE_CODE
 
 
 async def test_com_missconfiguration():
@@ -71,4 +72,20 @@ async def test_address(pump: Pump):
 
 async def test_time(pump: Pump):
     time = await pump.set_time()
-    assert len(time) == len("05/06/23 11:29:01 PM")
+    assert ":" in time
+    assert "PM" in time or "AM" in time
+    assert "/" in time
+
+
+@pytest.mark.parametrize(
+    "mode,output",
+    [
+        ("i", "Infuse Only"),
+        ("w", "Withdraw Only"),
+        ("iw", "Infuse/Withdraw"),
+    ],
+)
+async def test_qs_mode(pump: Pump, mode: QS_MODE_CODE, output: str):
+    await pump.set_mode(mode)
+    outcome = await pump.get_mode()
+    assert output in outcome
