@@ -76,8 +76,8 @@ async def pump(request, serial):
     mock_now = datetime.strptime("02:48:23 PM 05/08/2023", "%I:%M:%S %p %m/%d/%Y")
     with mock.patch("syringe_pump.pump.datetime") as mock_datetime:
         mock_datetime.now.return_value = mock_now
-        await pump.setup()
-        yield pump
+        async with pump:
+            yield pump
 
     if not request.config.option.offline:
         assert isinstance(pump, SpyPump)

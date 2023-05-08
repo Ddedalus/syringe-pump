@@ -366,5 +366,14 @@
             ],
             "raw_text": "7.2620 mm\r\n:"
         }
+    ],
+    "stp": [
+        {
+            "command": "stp",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
     ]
 }

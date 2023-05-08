@@ -1,3 +1,4 @@
+from contextlib import AbstractAsyncContextManager
 from datetime import datetime
 from functools import cached_property
 from typing import List, Literal
@@ -20,7 +21,7 @@ class PumpVersion(BaseModel):
 QS_MODE_CODE = Literal["i", "w", "iw", "wi"]
 
 
-class Pump(SerialInterface):
+class Pump(SerialInterface, AbstractAsyncContextManager):
     """High-level interface for the Legato 100 syringe pump.
     Upon initialisation, sets poll mode to on, making prompts parsable.
     """
@@ -40,14 +41,16 @@ class Pump(SerialInterface):
     def __init__(self, *, serial: aioserial.AioSerial):
         super().__init__(serial=serial)
 
-    async def setup(self):
-        """Set up the pump for control via external computer."""
-        # configure pump to send prompts that are machine-readable (end in XON)
+    async def __aenter__(self):
         await self._write("poll on")
         # disable NVRAM storage which could be damaged by repeated writes
         await self._write("nvram none")
         await self.set_mode("iw")  # set pump to infusion and withdrawal mode
         await self.set_time()  # set pump time to current time
+        return self
+
+    async def __aexit__(self, *args):
+        await self.stop()
 
     async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
         if direction == "infuse":
