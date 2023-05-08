@@ -1,9 +1,8 @@
-import random
-
 import pytest
 
 from syringe_pump import Pump, Quantity, Rate
 from syringe_pump.rate import RateRampInfo
+from tests.conftest import Random
 
 
 @pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
@@ -19,8 +18,8 @@ async def test_rate_error(rate: Rate):
         await rate.set(Quantity(1.0, "nonsense"))
 
 
-async def test_rate_set_get(rate: Rate):
-    new_rate = random.uniform(1e-4, 2e-3)
+async def test_rate_set_get(rate: Rate, rng: Random):
+    new_rate = rng.uniform(1e-4, 2e-3)
     await rate.set(Quantity(f"{new_rate} l/min"))
     read_rate = await rate.get()
     assert round(read_rate, 3) == round(new_rate, 3)
@@ -41,13 +40,13 @@ async def test_rate_limits(rate: Rate):
 
 
 @pytest.fixture
-def random_ramp():
-    start = round(random.uniform(0.1, 0.3), 3)
-    end = round(random.uniform(0.4, 0.6), 3)
+def random_ramp(rng: Random):
+    start = round(rng.uniform(0.1, 0.3), 3)
+    end = round(rng.uniform(0.4, 0.6), 3)
     return RateRampInfo(
         start=Quantity(f"{start} ml/min"),
         end=Quantity(f"{end} ml/min"),
-        duration=round(random.uniform(5, 10), 3),
+        duration=round(rng.uniform(5, 10), 3),
     )
 
 

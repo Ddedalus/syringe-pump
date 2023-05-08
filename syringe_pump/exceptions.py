@@ -19,7 +19,10 @@ class PumpCommandError(PumpError):
 
     def __str__(self) -> str:
         message = "\n".join(self.response.message)
-        return f"Got {message!r} while executing {self.response.command!r}"
+        return (
+            f"Got {message!r} while executing {self.response.command!r}\n"
+            f"{self.response.dict()!r}"
+        )
 
 
 class PumpStateError(PumpCommandError):

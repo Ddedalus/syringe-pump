@@ -1,0 +1,343 @@
+{
+    "load qs iw": [
+        {
+            "command": "load qs iw",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        },
+        {
+            "command": "load qs iw",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "version": [
+        {
+            "command": "version",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Firmware:      v3.0.6",
+                "Pump address:  0",
+                "Serial number: D101754"
+            ],
+            "raw_text": "Firmware:      v3.0.6\r\nPump address:  0\r\nSerial number: D101754\r\n:"
+        }
+    ],
+    "force 15": [
+        {
+            "command": "force 15",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "force": [
+        {
+            "command": "force",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "15%"
+            ],
+            "raw_text": "15%\r\n:"
+        }
+    ],
+    "addr 2": [
+        {
+            "command": "addr 2",
+            "prompt": ":",
+            "address": 2,
+            "message": [
+                "Pump address set to 2"
+            ],
+            "raw_text": "Pump address set to 2\r\n02:"
+        }
+    ],
+    "addr 0": [
+        {
+            "command": "addr 0",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Pump address set to 0"
+            ],
+            "raw_text": "Pump address set to 0\r\n:"
+        }
+    ],
+    "time 05/08/23 14:42:44": [
+        {
+            "command": "time 05/08/23 14:42:44",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "05/08/23 2:42:44 PM"
+            ],
+            "raw_text": "05/08/23 2:42:44 PM\r\n:"
+        }
+    ],
+    "load qs i": [
+        {
+            "command": "load qs i",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "load": [
+        {
+            "command": "load",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Quick Start - Infuse Only (qs i)"
+            ],
+            "raw_text": "Quick Start - Infuse Only (qs i)\r\n:"
+        },
+        {
+            "command": "load",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Quick Start - Withdraw Only (qs w)"
+            ],
+            "raw_text": "Quick Start - Withdraw Only (qs w)\r\n:"
+        },
+        {
+            "command": "load",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Quick Start - Infuse/Withdraw (qs iw)"
+            ],
+            "raw_text": "Quick Start - Infuse/Withdraw (qs iw)\r\n:"
+        }
+    ],
+    "load qs w": [
+        {
+            "command": "load qs w",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "irate 199.49 ul/min": [
+        {
+            "command": "irate 199.49 ul/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "irate": [
+        {
+            "command": "irate",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "199.49 ul/min"
+            ],
+            "raw_text": "199.49 ul/min\r\n:"
+        },
+        {
+            "command": "irate",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "1 ml/min"
+            ],
+            "raw_text": "1 ml/min\r\n:"
+        }
+    ],
+    "irate 1 ml/min": [
+        {
+            "command": "irate 1 ml/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "irate lim": [
+        {
+            "command": "irate lim",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "25.0404 nl/min to 26.0035 ml/min"
+            ],
+            "raw_text": "25.0404 nl/min to 26.0035 ml/min\r\n:"
+        }
+    ],
+    "iramp 110 ul/min 417 ul/min 7.036": [
+        {
+            "command": "iramp 110 ul/min 417 ul/min 7.036",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "iramp": [
+        {
+            "command": "iramp",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "110 ul/min to 417 ul/min in 7.036 seconds"
+            ],
+            "raw_text": "110 ul/min to 417 ul/min in 7.036 seconds\r\n:"
+        },
+        {
+            "command": "iramp",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Ramp not set up."
+            ],
+            "raw_text": "Ramp not set up.\r\n:"
+        }
+    ],
+    "cttime": [
+        {
+            "command": "cttime",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        },
+        {
+            "command": "cttime",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "wrate 199.49 ul/min": [
+        {
+            "command": "wrate 199.49 ul/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "wrate": [
+        {
+            "command": "wrate",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "199.49 ul/min"
+            ],
+            "raw_text": "199.49 ul/min\r\n:"
+        },
+        {
+            "command": "wrate",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "1 ml/min"
+            ],
+            "raw_text": "1 ml/min\r\n:"
+        }
+    ],
+    "wrate 1 ml/min": [
+        {
+            "command": "wrate 1 ml/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "wrate lim": [
+        {
+            "command": "wrate lim",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "25.0404 nl/min to 26.0035 ml/min"
+            ],
+            "raw_text": "25.0404 nl/min to 26.0035 ml/min\r\n:"
+        }
+    ],
+    "wramp 110 ul/min 417 ul/min 7.036": [
+        {
+            "command": "wramp 110 ul/min 417 ul/min 7.036",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "wramp": [
+        {
+            "command": "wramp",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "110 ul/min to 417 ul/min in 7.036 seconds"
+            ],
+            "raw_text": "110 ul/min to 417 ul/min in 7.036 seconds\r\n:"
+        },
+        {
+            "command": "wramp",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Ramp not set up."
+            ],
+            "raw_text": "Ramp not set up.\r\n:"
+        }
+    ],
+    "svolume 8.6284 ml": [
+        {
+            "command": "svolume 8.6284 ml",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "svolume": [
+        {
+            "command": "svolume",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "8.6284 ml"
+            ],
+            "raw_text": "8.6284 ml\r\n:"
+        }
+    ],
+    "diameter 7.262": [
+        {
+            "command": "diameter 7.262",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "diameter": [
+        {
+            "command": "diameter",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "7.2620 mm"
+            ],
+            "raw_text": "7.2620 mm\r\n:"
+        }
+    ]
+}
