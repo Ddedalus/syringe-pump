@@ -3,6 +3,7 @@ import random
 import pytest
 
 from syringe_pump import Pump, Quantity, Rate
+from syringe_pump.rate import RateRampInfo
 
 
 @pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
@@ -39,19 +40,25 @@ async def test_rate_limits(rate: Rate):
     assert 1e-3 < high
 
 
-async def test_rate_ramp(rate: Rate):
+@pytest.fixture
+def random_ramp():
     start = round(random.uniform(0.1, 0.3), 3)
     end = round(random.uniform(0.4, 0.6), 3)
-    duration = round(random.uniform(5, 10), 3)
-    await rate.set_ramp(
-        Quantity(f"{start} ml/min"), Quantity(f"{end} ml/min"), duration
+    return RateRampInfo(
+        start=Quantity(f"{start} ml/min"),
+        end=Quantity(f"{end} ml/min"),
+        duration=round(random.uniform(5, 10), 3),
     )
+
+
+async def test_rate_ramp(rate: Rate, random_ramp: RateRampInfo):
+    await rate.set_ramp(**random_ramp.dict())
     ramp = await rate.get_ramp()
 
     assert ramp
-    assert float(ramp.start) == pytest.approx(0.001 * start)
-    assert float(ramp.end) == pytest.approx(0.001 * end)
-    assert float(ramp.duration) == pytest.approx(duration)
+    assert float(ramp.start) == pytest.approx(random_ramp.start.real)
+    assert float(ramp.end) == pytest.approx(random_ramp.end.real)
+    assert float(ramp.duration) == pytest.approx(random_ramp.duration)
 
     await rate.reset_ramp()
     ramp = await rate.get_ramp()
