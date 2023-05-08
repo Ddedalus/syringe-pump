@@ -30,10 +30,12 @@ async def test_syringe_diameter(syringe: Syringe):
 @pytest.mark.skip("Don't annoy the pump. No easy way to go back to cusotm O.o")
 async def test_syringe_manufacturer(syringe: Syringe):
     with pytest.raises(ValueError):
-        await syringe.set_manufacturer(Syringe.Manufacturer.sst, Quantity("1 ml"))
+        await syringe.set_manufacturer(
+            Syringe.Manufacturer.STAINLESS_STEEL, Quantity("1 ml")
+        )
 
     response = await syringe.set_manufacturer(
-        Syringe.Manufacturer.sst, Quantity("20 ml")
+        Syringe.Manufacturer.STAINLESS_STEEL, Quantity("20 ml")
     )
     assert not response.message  # pump gives no inofrmation on success
 

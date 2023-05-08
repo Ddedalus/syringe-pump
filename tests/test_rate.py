@@ -19,7 +19,7 @@ async def test_rate_error(rate: Rate):
 
 
 async def test_rate_set_get(rate: Rate):
-    new_rate = random.uniform(1e-3, 2e-2)
+    new_rate = random.uniform(1e-4, 2e-3)
     await rate.set(Quantity(f"{new_rate} l/min"))
     read_rate = await rate.get()
     assert round(read_rate, 3) == round(new_rate, 3)

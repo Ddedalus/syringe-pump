@@ -1,10 +1,18 @@
 import asyncio
 import random
 
+import aioserial
 import pytest
+import serial
 
 from syringe_pump import Pump
 from syringe_pump.exceptions import PumpError
+
+
+async def test_com_missconfiguration():
+    """This is what the user will see if they choose the wrong COM port"""
+    with pytest.raises(serial.SerialException):
+        aioserial.AioSerial(port="COM42", baudrate=19200, timeout=0.1)
 
 
 async def test_pump_version(pump: Pump):
