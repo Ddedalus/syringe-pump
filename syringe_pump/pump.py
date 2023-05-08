@@ -19,6 +19,7 @@ class PumpVersion(BaseModel):
 
 
 QS_MODE_CODE = Literal["i", "w", "iw", "wi"]
+EXIT_BRIGHTNESS = 15
 
 
 class Pump(SerialInterface, AbstractAsyncContextManager):
@@ -51,6 +52,7 @@ class Pump(SerialInterface, AbstractAsyncContextManager):
 
     async def __aexit__(self, *args):
         await self.stop()
+        await self.set_brightness(EXIT_BRIGHTNESS)
 
     async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
         if direction == "infuse":

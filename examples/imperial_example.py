@@ -3,6 +3,7 @@
 import asyncio
 
 import aioserial
+from quantiphy import Quantity
 
 from syringe_pump import Pump
 
@@ -65,7 +66,7 @@ async def tune(pump: Pump):
     await pump.set_brightness(0)  # disable screen to avoid flicker
     for note, beat in zip(notes[start_at:], beats[start_at:]):
         if rate := max_rate * note / A5:
-            await pump.infusion_rate.set(rate)
+            await pump.infusion_rate.set(Quantity(f"{rate} ml/min"))
             await pump.run()
         else:  # pause between notes
             await pump.stop()
@@ -78,13 +79,8 @@ async def tune(pump: Pump):
 
 
 async def main(pump: Pump):
-    try:
+    async with pump:
         await tune(pump)
-    except (Exception, KeyboardInterrupt):
-        print("Emergency stop...")
-    finally:
-        await pump.stop()
-        await pump.set_brightness(15)
 
 
 if __name__ == "__main__":
