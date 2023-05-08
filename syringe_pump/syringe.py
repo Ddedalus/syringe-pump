@@ -1,11 +1,13 @@
 from enum import Enum
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from quantiphy import Quantity
 
 from .exceptions import *
 from .response_parser import extract_quantity
-from .serial_interface import SerialInterface
+
+if TYPE_CHECKING:
+    from .pump import Pump
 
 
 class Manufacturer(Enum):
@@ -29,31 +31,34 @@ class Manufacturer(Enum):
     TOP = "top"
 
 
-class Syringe(SerialInterface):
+class Syringe:
     """Expose methods to manage syringe settings."""
 
     Manufacturer = Manufacturer
 
+    def __init__(self, pump: "Pump") -> None:
+        self._pump = pump
+
     async def get_diameter(self) -> Quantity:
         """Get syringe diameter configured in the pump."""
-        output = await self._write("diameter")
+        output = await self._pump._write("diameter")
         diameter, _ = extract_quantity(output.message[0])
         return diameter
 
     async def set_diameter(self, diameter: float):
         """Set syringe diameter in mm."""
-        return await self._write(f"diameter {diameter:.4}")
+        return await self._pump._write(f"diameter {diameter:.4}")
 
     async def get_volume(self) -> Quantity:
         """Get syringe volume configured in the pump."""
-        output = await self._write("svolume")
+        output = await self._pump._write("svolume")
         volume, _ = extract_quantity(output.message[0])
         return volume
 
     async def set_volume(self, volume: Quantity):
         """Set syringe volume."""
         _check_volume(volume)
-        await self._write(f"svolume {volume:.4}")
+        await self._pump._write(f"svolume {volume:.4}")
 
     async def set_manufacturer(
         self, manufacturer: Manufacturer, volume: Optional[Quantity] = None
@@ -62,14 +67,14 @@ class Syringe(SerialInterface):
         try:
             if volume is not None:
                 _check_volume(volume)
-                response = await self._write(
+                response = await self._pump._write(
                     f"syrmanu {manufacturer.name} {volume:.4} "
                 )
             else:
-                response = await self._write(f"syrmanu {manufacturer.name}")
+                response = await self._pump._write(f"syrmanu {manufacturer.name}")
         except PumpCommandError as e:
             if "Unknown syringe" in e.response.message[1]:
-                options = await self._write(f"syrmanu {manufacturer.name} ?")
+                options = await self._pump._write(f"syrmanu {manufacturer.name} ?")
                 raise ValueError(
                     f"Unknown syringe. Valid volumes are: \n{options.raw_text}"
                 ) from e
@@ -78,7 +83,7 @@ class Syringe(SerialInterface):
 
     async def get_manufacturer(self):
         """Get syringe manufacturer configured in the pump."""
-        output = await self._write("syrmanu")
+        output = await self._pump._write("syrmanu")
         print(output.message)
         manu, volume, diam = output.message[0].split(",")
         return manu, Quantity(volume), Quantity(diam)
