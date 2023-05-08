@@ -70,15 +70,15 @@
             "raw_text": "Pump address set to 0\r\n:"
         }
     ],
-    "time 05/08/23 14:42:44": [
+    "time 05/08/23 14:48:23": [
         {
-            "command": "time 05/08/23 14:42:44",
+            "command": "time 05/08/23 14:48:23",
             "prompt": ":",
             "address": 0,
             "message": [
-                "05/08/23 2:42:44 PM"
+                "05/08/23 2:48:23 PM"
             ],
-            "raw_text": "05/08/23 2:42:44 PM\r\n:"
+            "raw_text": "05/08/23 2:48:23 PM\r\n:"
         }
     ],
     "load qs i": [
