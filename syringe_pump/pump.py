@@ -39,7 +39,15 @@ class Pump(SerialInterface):
 
     def __init__(self, *, serial: aioserial.AioSerial):
         super().__init__(serial=serial)
-        super()._prepare_pump()
+
+    async def setup(self):
+        """Set up the pump for control via external computer."""
+        # configure pump to send prompts that are machine-readable (end in XON)
+        await self._write("poll on")
+        # disable NVRAM storage which could be damaged by repeated writes
+        await self._write("nvram none")
+        await self.set_mode("iw")  # set pump to infusion and withdrawal mode
+        await self.set_time()  # set pump time to current time
 
     async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
         if direction == "infuse":

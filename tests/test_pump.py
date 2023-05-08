@@ -1,7 +1,5 @@
 import asyncio
 import random
-from datetime import datetime
-from unittest import mock
 
 import aioserial
 import pytest
@@ -74,10 +72,7 @@ async def test_address(pump: Pump, rng: random):  # type: ignore
 
 
 async def test_time(pump: Pump):
-    mock_now = datetime.strptime("02:48:23 PM 05/08/2023", "%I:%M:%S %p %m/%d/%Y")
-    with mock.patch("syringe_pump.pump.datetime") as mock_datetime:
-        mock_datetime.now.return_value = mock_now
-        time = await pump.set_time()
+    time = await pump.set_time()
     assert ":" in time
     assert "PM" in time or "AM" in time
     assert "/" in time

@@ -26,11 +26,3 @@ class SerialInterface:
         if response.prompt not in [":", ">", "<"]:
             raise PumpStateError(response)
         return response
-
-    def _prepare_pump(self):
-        self.serial.write(b"poll on\r\n")
-        self.serial.read_until(XON)
-        self.serial.write(b"nvram none\r\n")
-        self.serial.read_until(XON)
-        # TODO: verify the output
-        # TODO: execute this async on first command instead

@@ -1,8 +1,10 @@
 import asyncio
 import json
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Protocol
+from unittest import mock
 
 import aioserial
 import pytest
@@ -71,8 +73,11 @@ async def pump(request, serial):
     else:
         pump = SpyPump(serial=serial)
 
-    await pump.set_mode("iw")
-    yield pump
+    mock_now = datetime.strptime("02:48:23 PM 05/08/2023", "%I:%M:%S %p %m/%d/%Y")
+    with mock.patch("syringe_pump.pump.datetime") as mock_datetime:
+        mock_datetime.now.return_value = mock_now
+        await pump.setup()
+        yield pump
 
     if not request.config.option.offline:
         assert isinstance(pump, SpyPump)
