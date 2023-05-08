@@ -3,11 +3,18 @@ from functools import cached_property
 from typing import List, Literal
 
 import aioserial
+from pydantic import BaseModel, Field
 
 from .exceptions import PumpError
 from .rate import Rate
 from .serial_interface import SerialInterface
 from .syringe import Syringe
+
+
+class PumpVersion(BaseModel):
+    firmware: str = Field(default=..., alias="Firmware")
+    address: int = Field(default=..., alias="Pump address")
+    serial_number: str = Field(default=..., alias="Serial number")
 
 
 class Pump(SerialInterface):
@@ -47,9 +54,10 @@ class Pump(SerialInterface):
             raise PumpError("Brightness must be integer between 0 and 100")
         await self._write(f"dim {brightness}")
 
-    async def version(self):
+    async def version(self) -> PumpVersion:
         output = await self._write("version")
-        return _parse_colon_mapping(output.message)
+        data = _parse_colon_mapping(output.message)
+        return PumpVersion(**data)
 
     async def set_force(self, force: int):
         if force < 0 or force > 100:

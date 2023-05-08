@@ -5,7 +5,7 @@ import aioserial
 import pytest
 import serial
 
-from syringe_pump import Pump
+from syringe_pump import Pump, PumpVersion
 from syringe_pump.exceptions import PumpError
 
 
@@ -17,9 +17,7 @@ async def test_com_missconfiguration():
 
 async def test_pump_version(pump: Pump):
     output = await pump.version()
-    assert "Firmware" in output
-    assert "Pump address" in output
-    assert "Serial number" in output
+    assert isinstance(output, PumpVersion)
 
 
 @pytest.mark.skip(reason="Don't annoy the pump")
