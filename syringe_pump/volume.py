@@ -1,7 +1,4 @@
-import re
-
-from .exceptions import *
-from .serial_interface import SerialInterface
+from syringe_pump.serial_interface import SerialInterface
 
 
 class Volume(SerialInterface):

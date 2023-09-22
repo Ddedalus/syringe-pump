@@ -4,7 +4,7 @@ from typing import List, Tuple
 from pydantic import BaseModel, Field
 from quantiphy import Quantity
 
-from .exceptions import PumpError
+from syringe_pump.exceptions import PumpError
 
 XON = b"\x11"
 

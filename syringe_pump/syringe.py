@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Optional
 
 from quantiphy import Quantity
 
-from .exceptions import *
-from .response_parser import extract_quantity
+from syringe_pump.exceptions import *
+from syringe_pump.response_parser import extract_quantity
 
 if TYPE_CHECKING:
     from .pump import Pump
