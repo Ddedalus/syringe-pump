@@ -30,7 +30,7 @@ jobs:
       - name: Run pytest
         run: |
           poetry run pytest --offline --motion
-          poetry run isort --check-only --diff
+          poetry run isort . --check-only --diff
       # - name: Upload coverage
       #   uses: codecov/codecov-action@v1
   black:
