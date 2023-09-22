@@ -29,6 +29,6 @@ jobs:
       - name: Install Dependencies
         run: poetry install --with dev
       - name: Run pytest
-        run: poetry run pytest
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        run: poetry run pytest --offline --motion
+      # - name: Upload coverage
+      #   uses: codecov/codecov-action@v1
