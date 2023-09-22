@@ -3,7 +3,7 @@
 _Python controller for Legato 100 syringe pump_
 
 
-![Syringe pump](https://raw.githubusercontent.com/Ddedalus/syringe-pump/main/assets/logo/syringe_icon.png)
+<img src="https://raw.githubusercontent.com/Ddedalus/syringe-pump/main/assets/logo/syringe_icon.png" width="100" height="100" alt="Syringe logo by Freepik @ Flaticon.com" />
 
 | ![Tests](https://github.com/Ddedalus/syringe-pump/actions/workflows/test.yml/badge.svg) | [![Test Coverage](https://coveralls.io/repos/github/Ddedalus/syringe-pump/badge.svg?branch=main)](https://coveralls.io/github/Ddedalus/syringe-pump?branch=main) | [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) |
 |:-:|:-:|:-:|
