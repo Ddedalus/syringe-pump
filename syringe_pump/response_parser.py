@@ -22,11 +22,12 @@ class PumpResponse(BaseModel):
     @classmethod
     def from_output(cls, raw_output: bytes, command: str):
         output = raw_output.rstrip(XON).strip().decode()
+        if not output:
+            raise PumpError("No response from pump")
+
         self = cls(raw_text=output, command=command)
         lines = [self._strip_address(l) for l in output.split("\r\n")]
 
-        if not lines:
-            raise PumpError("No response from pump")
         if lines[-1]:  # there is prompt in last line, because there is no address
             self.prompt = lines[-1]
         self.message = lines[:-1]

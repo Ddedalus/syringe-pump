@@ -17,6 +17,12 @@ async def test_com_missconfiguration():
         aioserial.AioSerial(port="COM42", baudrate=19200, timeout=0.1)
 
 
+async def test_pump_not_initialized():
+    """This is what the user will see if they try to use the pump without initializing it"""
+    with pytest.raises(PumpError):
+        await Pump(serial=aioserial.AioSerial()).version()
+
+
 async def test_pump_version(pump: Pump):
     output = await pump.version()
     assert isinstance(output, PumpVersion)

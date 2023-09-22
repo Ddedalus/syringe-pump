@@ -51,6 +51,9 @@ def random_ramp(rng: Random):
 
 
 async def test_rate_ramp(rate: Rate, random_ramp: RateRampInfo):
+    with pytest.raises(ValueError):
+        await rate.set_ramp(random_ramp.start, random_ramp.end, -1)
+
     await rate.set_ramp(**random_ramp.dict())
     ramp = await rate.get_ramp()
 
