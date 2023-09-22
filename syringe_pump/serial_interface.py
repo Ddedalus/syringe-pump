@@ -1,7 +1,7 @@
 import aioserial
 
-from .exceptions import *
-from .response_parser import XON, PumpResponse
+from syringe_pump.exceptions import *
+from syringe_pump.response_parser import XON, PumpResponse
 
 
 class SerialInterface:

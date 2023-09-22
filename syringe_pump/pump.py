@@ -7,10 +7,10 @@ from typing import List, Literal
 import aioserial
 from pydantic import BaseModel, Field
 
-from .exceptions import PumpError
-from .rate import Rate
-from .serial_interface import SerialInterface
-from .syringe import Syringe
+from syringe_pump.exceptions import PumpError
+from syringe_pump.rate import Rate
+from syringe_pump.serial_interface import SerialInterface
+from syringe_pump.syringe import Syringe
 
 logger = getLogger(__name__)
 

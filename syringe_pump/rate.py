@@ -1,12 +1,9 @@
-import re
 from typing import TYPE_CHECKING, Optional, Tuple
 
 from pydantic import BaseModel
 from quantiphy import Quantity
 
 from syringe_pump.response_parser import extract_quantity, extract_string
-
-from .exceptions import *
 
 if TYPE_CHECKING:
     from .pump import Pump
