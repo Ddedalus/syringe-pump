@@ -1,4 +1,11 @@
-""" Print information about available COM ports on the system."""
+"""
+Print information about available COM ports on the system.
+NOTE: you need to install pyserial for this example
+```
+pip install pyserial
+```
+"""
+
 import serial.tools.list_ports
 
 if __name__ == "__main__":
