@@ -1,10 +1,12 @@
 name: Test
 
 on:
+# run on open merge requests and on main branch
   pull_request:
     types: [opened, synchronize]
-  branch:
-    - master
+  push:
+    branches:
+      - main
 
 jobs:
   test:
