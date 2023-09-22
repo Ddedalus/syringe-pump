@@ -167,11 +167,11 @@ await pump.syringe.set_manufacturer(Manufacturer.HOSHI, Quantity("1 ml"))
 ```
 
 # Examples
-See the [examples](examples) folder for more examples.
+See the [examples](https://github.com/Ddedalus/syringe-pump/tree/main/examples) folder for more examples.
 
 # Development
 
-Have a look at [CONTRIBUTING.md](CONTRIBUTING.md) for more information on the scope of the project and how to contribute.
+Have a look at [CONTRIBUTING.md](https://github.com/Ddedalus/syringe-pump/blob/main/CONTRIBUTING.md) for more information on the scope of the project and how to contribute.
 
 # Credits
 
