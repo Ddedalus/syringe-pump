@@ -3,7 +3,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Protocol
+from typing import Dict, List, Optional, Protocol, Union
 from unittest import mock
 
 import aioserial
@@ -32,68 +32,78 @@ class ConnectionSettings(BaseSettings):
     timeout: float = Field(default=2, env="SYRINGE_PUMP_TIMEOUT")
 
 
-@pytest.fixture(scope="session")
-def serial(request):
-    if request.config.option.offline:
-        print("No serial connection created in offline mode.")
-        return aioserial.AioSerial()
-    else:
-        return aioserial.AioSerial(**ConnectionSettings().dict())
-
-
-class SpyPump(Pump):
+class SpySerial(aioserial.AioSerial):
     """Interface that talks to the actual pump, but collects all input-output pairs for later offline use."""
 
-    io_mapping: Dict[str, List[Dict]] = defaultdict(list)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.io_mapping: Dict[str, List[str]] = defaultdict(list)
+        self._most_recent_command: str = ""
 
-    async def _write(self, command: str):
-        output = await super()._write(command)
-        self.io_mapping[command].append(output.dict())
-        return output
+    async def write_async(self, data) -> int:
+        self._most_recent_command = bytes(data).decode()
+        return await super().write_async(data)
 
-    def dump(self, json_file: Path):
+    async def read_until_async(self, expected: bytes = b"\r\n", size=None) -> bytes:
+        answer = await super().read_until_async(expected, size)
+        if self._most_recent_command:
+            self.io_mapping[self._most_recent_command].append(answer.decode())
+        self._most_recent_command = ""
+        return answer
+
+    def persist(self, json_file: Path):
         with json_file.open("w") as f:
             json.dump(self.io_mapping, f, indent=4)
 
 
-class OfflinePump(Pump):
-    io_mapping: Dict[str, List[Dict]]
+class OfflineSerial(aioserial.AioSerial):
+    def __init__(self, casette: Path, **kwargs) -> None:
+        super().__init__(**kwargs)
+        with casette.open("r") as f:
+            self.io_mapping: Dict[str, List[str]] = json.load(f)
+        self._next_response: str = ""
 
-    async def load(self, json_file: Path):
-        with json_file.open("r") as f:
-            self.io_mapping = json.load(f)
-
-    async def _write(self, command: str):
+    async def write_async(self, data) -> int:
+        command = bytes(data).decode()
         if command not in self.io_mapping:
-            raise ValueError(
-                f"Command {command!r} not found in {self.io_mapping.keys()}"
-            )
+            raise KeyError(f"Command {command!r} not found in {self.io_mapping.keys()}")
         outputs = self.io_mapping[command]
         if not outputs:
-            raise ValueError(f"Command {command!r} has no outputs left")
-        output = PumpResponse(**outputs.pop(0))  # type: ignore
-        return output
+            raise IndexError(f"Command {command!r} has no outputs left")
+        self._next_response = outputs.pop(0)
+        return len(data)
+
+    async def read_until_async(self, expected: bytes = b"\r\n", size=None) -> bytes:
+        if not self._next_response:
+            raise ValueError("No response set")
+        response = self._next_response
+        self._next_response = ""
+        return response.encode()
+
+
+casette_file = Path(__file__).parent / "casette.json"
+
+
+@pytest.fixture(scope="session")
+def serial(request):
+    if request.config.option.offline:
+        print("Using offline serial interface")
+        yield OfflineSerial(casette=casette_file)
+    else:
+        s = SpySerial(**ConnectionSettings().dict())
+        yield s
+        s.persist(casette_file)
 
 
 @pytest.fixture(scope="session")
 async def pump(request, serial):
-    mapping_file = Path(__file__).parent / "io_mapping.json"
-    if request.config.option.offline:
-        print("Using offline pump")
-        pump = OfflinePump(serial=serial)
-        await pump.load(mapping_file)
-    else:
-        pump = SpyPump(serial=serial)
+    pump = Pump(serial=serial)
 
     mock_now = datetime.strptime("02:48:23 PM 05/08/2023", "%I:%M:%S %p %m/%d/%Y")
     with mock.patch("syringe_pump.pump.datetime") as mock_datetime:
         mock_datetime.now.return_value = mock_now
         async with pump:
             yield pump
-
-    if not request.config.option.offline:
-        assert isinstance(pump, SpyPump)
-        pump.dump(mapping_file)
 
 
 @pytest.fixture(scope="session", params=["infusion_rate", "withdrawal_rate"])
