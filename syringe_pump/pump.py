@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from syringe_pump.exceptions import PumpError
 from syringe_pump.rate import Rate
-from syringe_pump.serial_interface import SerialInterface
+from syringe_pump.serial_interface import PumpSerial
 from syringe_pump.syringe import Syringe
 
 logger = getLogger(__name__)
@@ -25,10 +25,8 @@ QS_MODE_CODE = Literal["i", "w", "iw", "wi"]
 EXIT_BRIGHTNESS = 15
 
 
-class Pump(SerialInterface, AbstractAsyncContextManager):
-    """High-level interface for the Legato 100 syringe pump.
-    Upon initialisation, sets poll mode to on, making prompts parsable.
-    """
+class Pump(PumpSerial, AbstractAsyncContextManager):
+    """High-level interface for the Legato 100 syringe pump."""
 
     @cached_property
     def infusion_rate(self) -> Rate:
@@ -42,15 +40,19 @@ class Pump(SerialInterface, AbstractAsyncContextManager):
     def syringe(self) -> Syringe:
         return Syringe(pump=self)
 
-    def __init__(self, *, serial: aioserial.AioSerial):
-        super().__init__(serial=serial)
+    @classmethod
+    async def from_serial(cls, serial: aioserial.AioSerial):
+        self = Pump(serial=serial)
+        await self._initialise()
+        return self
 
-    async def __aenter__(self):
-        await self._write("poll on")
-        # disable NVRAM storage which could be damaged by repeated writes
-        await self._write("nvram none")
+    async def _initialise(self):
+        await super()._initialise()
         await self.set_mode("iw")  # set pump to infusion and withdrawal mode
         await self.set_time()  # set pump time to current time
+
+    async def __aenter__(self):
+        await self._initialise()
         return self
 
     async def __aexit__(self, *args):
@@ -59,6 +61,7 @@ class Pump(SerialInterface, AbstractAsyncContextManager):
             await self.set_brightness(EXIT_BRIGHTNESS)
         except PumpError:
             logger.error("Failed to reset display brightness on exit!")
+        self._initialised = False
 
     async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
         if direction == "infuse":
