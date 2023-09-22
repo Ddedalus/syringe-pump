@@ -29,5 +29,11 @@ jobs:
         run: poetry install --with dev
       - name: Run pytest
         run: poetry run pytest --offline --motion
+        run: poetry run isort --check-only --diff
       # - name: Upload coverage
       #   uses: codecov/codecov-action@v1
+  black:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: psf/black@stable
