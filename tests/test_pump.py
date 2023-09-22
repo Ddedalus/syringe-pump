@@ -4,6 +4,7 @@ import random
 import aioserial
 import pytest
 import serial
+from quantiphy import Quantity
 
 from syringe_pump import Pump, PumpVersion
 from syringe_pump.exceptions import PumpError
@@ -21,14 +22,18 @@ async def test_pump_version(pump: Pump):
     assert isinstance(output, PumpVersion)
 
 
-@pytest.mark.skip(reason="Don't annoy the pump")
+@pytest.mark.motion
 async def test_start_stop(pump: Pump):
     with pytest.raises(ValueError):
         await pump.run(direction="invalid")  # type: ignore
 
     try:
+        await pump.infusion_rate.set(Quantity("1 ml/min"))
         await pump.run()
         await asyncio.sleep(0.1)
+        await pump.stop()
+
+        await pump.withdrawal_rate.set(Quantity("1 ml/min"))
         await pump.run(direction="withdraw")
         await asyncio.sleep(0.1)
     finally:

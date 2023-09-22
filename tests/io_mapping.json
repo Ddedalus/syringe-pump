@@ -66,6 +66,79 @@
             "raw_text": "Firmware:      v3.0.6\r\nPump address:  0\r\nSerial number: D101754\r\n:"
         }
     ],
+    "irate 1 ml/min": [
+        {
+            "command": "irate 1 ml/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        },
+        {
+            "command": "irate 1 ml/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "irun": [
+        {
+            "command": "irun",
+            "prompt": ">",
+            "address": 0,
+            "message": [],
+            "raw_text": ">"
+        }
+    ],
+    "stp": [
+        {
+            "command": "stp",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        },
+        {
+            "command": "stp",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        },
+        {
+            "command": "stp",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "wrate 1 ml/min": [
+        {
+            "command": "wrate 1 ml/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        },
+        {
+            "command": "wrate 1 ml/min",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "wrun": [
+        {
+            "command": "wrun",
+            "prompt": "<",
+            "address": 0,
+            "message": [],
+            "raw_text": "<"
+        }
+    ],
     "force 15": [
         {
             "command": "force 15",
@@ -184,15 +257,6 @@
             "raw_text": "1 ml/min\r\n:"
         }
     ],
-    "irate 1 ml/min": [
-        {
-            "command": "irate 1 ml/min",
-            "prompt": ":",
-            "address": 0,
-            "message": [],
-            "raw_text": ":"
-        }
-    ],
     "irate lim": [
         {
             "command": "irate lim",
@@ -278,15 +342,6 @@
             "raw_text": "1 ml/min\r\n:"
         }
     ],
-    "wrate 1 ml/min": [
-        {
-            "command": "wrate 1 ml/min",
-            "prompt": ":",
-            "address": 0,
-            "message": [],
-            "raw_text": ":"
-        }
-    ],
     "wrate lim": [
         {
             "command": "wrate lim",
@@ -367,9 +422,48 @@
             "raw_text": "7.2620 mm\r\n:"
         }
     ],
-    "stp": [
+    "syrmanu HOSHI ?": [
         {
-            "command": "stp",
+            "command": "syrmanu HOSHI ?",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "1 ml",
+                "2 ml",
+                "3 ml",
+                "5 ml",
+                "10 ml",
+                "20 ml",
+                "30 ml",
+                "50 ml",
+                "100 ml"
+            ],
+            "raw_text": "1 ml\r\n2 ml\r\n3 ml\r\n5 ml\r\n10 ml\r\n20 ml\r\n30 ml\r\n50 ml\r\n100 ml\r\n:"
+        }
+    ],
+    "syrmanu HOSHI 20 ml ": [
+        {
+            "command": "syrmanu HOSHI 20 ml ",
+            "prompt": ":",
+            "address": 0,
+            "message": [],
+            "raw_text": ":"
+        }
+    ],
+    "syrmanu": [
+        {
+            "command": "syrmanu",
+            "prompt": ":",
+            "address": 0,
+            "message": [
+                "Hoshi, 20 ml, 20.45 mm"
+            ],
+            "raw_text": "Hoshi, 20 ml, 20.45 mm\r\n:"
+        }
+    ],
+    "dim 15": [
+        {
+            "command": "dim 15",
             "prompt": ":",
             "address": 0,
             "message": [],

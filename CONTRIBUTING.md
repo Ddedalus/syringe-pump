@@ -1,7 +1,7 @@
 # Dev setup
 ```
 poetry shell
-poetry install
+poetry install --with dev
 ```
 
 # Tests
@@ -10,8 +10,10 @@ These can be run in two modes:
  * Online: requires a Legato 100 syringe pump to be connected to the computer
  * Offline: uses mock responses collected during online tests
 
-Corresponding commands:
+Further, a small set of tests is available to test the motion control functionality of the pump. These tests will move the plunger if a pump is connected. They are disabled by default and can be run with the `--motion` flag.
+
 ```bash
 pytest
 pytest --offline
+pytest --motion
 ```

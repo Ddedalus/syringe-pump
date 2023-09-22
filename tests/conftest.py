@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -8,9 +9,15 @@ from unittest import mock
 
 import aioserial
 import pytest
+from pydantic import BaseSettings, Field
 
 from syringe_pump import Pump
 from syringe_pump.response_parser import PumpResponse
+from tests.pytest_config import (
+    pytest_addoption,
+    pytest_collection_modifyitems,
+    pytest_configure,
+)
 
 
 @pytest.fixture(scope="session")
@@ -20,9 +27,19 @@ def event_loop():
     loop.close()
 
 
+class ConnectionSettings(BaseSettings):
+    port: str = Field(default="COM3", env="SYRINGE_PUMP_PORT")
+    baudrate: int = Field(default=115200, env="SYRINGE_PUMP_BAUDRATE")
+    timeout: float = Field(default=2, env="SYRINGE_PUMP_TIMEOUT")
+
+
 @pytest.fixture(scope="session")
-def serial():
-    return aioserial.AioSerial(port="COM4", baudrate=115200, timeout=2)
+def serial(request):
+    if request.config.option.offline:
+        print("No serial connection created in offline mode.")
+        return aioserial.AioSerial()
+    else:
+        return aioserial.AioSerial(**ConnectionSettings().dict())
 
 
 class SpyPump(Pump):
@@ -57,10 +74,6 @@ class OfflinePump(Pump):
             raise ValueError(f"Command {command!r} has no outputs left")
         output = PumpResponse(**outputs.pop(0))  # type: ignore
         return output
-
-
-def pytest_addoption(parser):
-    parser.addoption("--offline", action="store_true", help="Use mock pump responses.")
 
 
 @pytest.fixture(scope="session")

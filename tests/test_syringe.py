@@ -24,24 +24,22 @@ async def test_syringe_diameter(syringe: Syringe, rng: Random):
     assert round(read_diameter, 3) == round(new_diameter / 1000, 3)
 
 
-@pytest.mark.skip("Don't annoy the pump. No easy way to go back to cusotm O.o")
+@pytest.mark.motion
 async def test_syringe_manufacturer(syringe: Syringe):
     with pytest.raises(ValueError):
-        await syringe.set_manufacturer(
-            Syringe.Manufacturer.STAINLESS_STEEL, Quantity("1 ml")
-        )
+        await syringe.set_manufacturer(Syringe.Manufacturer.HOSHI, Quantity("200 ml"))
 
     response = await syringe.set_manufacturer(
-        Syringe.Manufacturer.STAINLESS_STEEL, Quantity("20 ml")
+        Syringe.Manufacturer.HOSHI, Quantity("20 ml")
     )
     assert not response.message  # pump gives no inofrmation on success
 
     (manu, volume, diam) = await syringe.get_manufacturer()
 
     # This is neither code nor full name; highly inconsistent
-    assert manu == "Stainless"
-    assert diam == 0.01913  # This appears to be computed / known by the pump
-    assert volume == 0.02
+    assert manu == "Hoshi"
+    assert diam == Quantity("20.45 mm")  # computed / known by the pump
+    assert volume == Quantity("20 ml")
 
 
 def test_random(rng: Random):
