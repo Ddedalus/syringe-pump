@@ -1,8 +1,16 @@
+<center>
+
 _Python controller for Legato 100 syringe pump_
 
-![Logo](https://raw.githubusercontent.com/Ddedalus/syringe-pump/main/assets/logo/syringe_icon.png)
 
-![Tests](https://github.com/Ddedalus/syringe-pump/actions/workflows/test.yml/badge.svg)
+![Syringe pump](https://raw.githubusercontent.com/Ddedalus/syringe-pump/main/assets/logo/syringe_icon.png)
+
+| ![Tests](https://github.com/Ddedalus/syringe-pump/actions/workflows/test.yml/badge.svg) | [![Test Coverage](https://coveralls.io/repos/github/Ddedalus/syringe-pump/badge.svg?branch=main)](https://coveralls.io/github/Ddedalus/syringe-pump?branch=main) | [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) |
+|:-:|:-:|:-:|
+| [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | [![Latest version](https://badge.fury.io/py/python-syringe-pump.svg)](https://pypi.org/project/python-syringe-pump/) | [![GitHub issues](https://img.shields.io/github/issues/ddedalus/syringe-pump)]()
+
+</center>
+
 Control a syringe pumpt (e.g. Legato 100) using a computer.
 This package uses a COM port to communicate with the pump via an USB cable.
 It enables you to write python programs that control the pump, e.g. turn it on and off, set the flow rate, etc.

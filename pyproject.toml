@@ -5,6 +5,8 @@ description = "A python controller for syringe pumps, e.g. Legato 100"
 authors = ["Hubert Bereś <h.beres@hotmail.com>"]
 license = "GPLv3"
 readme = "README.md"
+repository = "https://github.com/Ddedalus/syringe-pump"
+homepage = "https://github.com/Ddedalus/syringe-pump"
 packages = [{include = "syringe_pump"}]
 
 [tool.poetry.dependencies]
