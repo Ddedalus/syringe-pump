@@ -75,6 +75,12 @@ class OfflinePump(Pump):
         output = PumpResponse(**outputs.pop(0))  # type: ignore
         return output
 
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *_):
+        pass
+
 
 @pytest.fixture(scope="session")
 async def pump(request, serial):

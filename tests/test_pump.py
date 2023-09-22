@@ -38,16 +38,7 @@ async def test_start_stop(pump: Pump):
         await asyncio.sleep(0.1)
     finally:
         await pump.stop()
-
-
-@pytest.mark.skip(reason="This suddenly stopped working. TODO: investigate")
-async def test_set_brightness(pump: Pump):
-    with pytest.raises(PumpError):
-        await pump.set_brightness(-1)
-    with pytest.raises(PumpError):
-        await pump.set_brightness(150)
-
-    await pump.set_brightness(15)
+    await asyncio.sleep(0.1)
 
 
 async def test_force(pump: Pump, rng: random):  # type: ignore
@@ -60,6 +51,18 @@ async def test_force(pump: Pump, rng: random):  # type: ignore
     await pump.set_force(force)
     new_force = await pump.get_force()
     assert new_force == force
+
+
+# @pytest.mark.skip
+@pytest.mark.motion
+async def test_set_brightness(pump: Pump):
+    with pytest.raises(PumpError):
+        await pump.set_brightness(-1)
+    with pytest.raises(PumpError):
+        await pump.set_brightness(150)
+
+    # TODO: this is not working for some unknown reason
+    # await pump.set_brightness(15)
 
 
 async def test_address(pump: Pump, rng: random):  # type: ignore

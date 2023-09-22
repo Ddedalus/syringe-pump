@@ -460,14 +460,5 @@
             ],
             "raw_text": "Hoshi, 20 ml, 20.45 mm\r\n:"
         }
-    ],
-    "dim 15": [
-        {
-            "command": "dim 15",
-            "prompt": ":",
-            "address": 0,
-            "message": [],
-            "raw_text": ":"
-        }
     ]
 }

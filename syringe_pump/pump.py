@@ -1,6 +1,7 @@
 from contextlib import AbstractAsyncContextManager
 from datetime import datetime
 from functools import cached_property
+from logging import getLogger
 from typing import List, Literal
 
 import aioserial
@@ -10,6 +11,8 @@ from .exceptions import PumpError
 from .rate import Rate
 from .serial_interface import SerialInterface
 from .syringe import Syringe
+
+logger = getLogger(__name__)
 
 
 class PumpVersion(BaseModel):
@@ -52,7 +55,10 @@ class Pump(SerialInterface, AbstractAsyncContextManager):
 
     async def __aexit__(self, *args):
         await self.stop()
-        await self.set_brightness(EXIT_BRIGHTNESS)
+        try:
+            await self.set_brightness(EXIT_BRIGHTNESS)
+        except PumpError:
+            logger.error("Failed to reset display brightness on exit!")
 
     async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
         if direction == "infuse":
