@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-syringe-pump"
-version = "0.1.0"
+version = "0.1.1"
 description = "A python controller for syringe pumps, e.g. Legato 100"
 authors = ["Hubert Bereś <h.beres@hotmail.com>"]
 license = "GPLv3"
