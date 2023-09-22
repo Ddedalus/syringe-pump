@@ -56,7 +56,10 @@ class Rate:
         return RateRampInfo(start=start, end=end, duration=float(duration))
 
     async def set_ramp(self, start: Quantity, end: Quantity, duration: float):
-        """Set up a linear change of pump speed, i.e. a ramp."""
+        """Set up a linear change of pump speed, i.e. a ramp.
+
+        Ramp duration is in seconds.
+        """
         _check_rate(start)
         _check_rate(end)
         if duration <= 0:

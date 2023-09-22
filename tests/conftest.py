@@ -75,9 +75,11 @@ class OfflinePump(Pump):
         return output
 
     async def __aenter__(self):
+        self._initialised = True
         return self
 
     async def __aexit__(self, *_):
+        self._initialised = False
         pass
 
 

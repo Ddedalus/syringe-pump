@@ -1,4 +1,14 @@
-# Dev setup
+# Project scope
+
+## In scope
+ * support for Legato 100 syringe pump
+
+## Contributions welcome
+ * check compatibility with other syringe pumps
+ * alternative synchronous controller
+ * more interesting examples of usage
+
+# Developer setup
 ```
 poetry shell
 poetry install --with dev
