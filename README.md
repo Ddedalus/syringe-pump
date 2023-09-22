@@ -17,8 +17,12 @@ It enables you to write python programs that control the pump, e.g. turn it on a
 
 # Installation
 
-```
+```bash
 pip install python-syringe-pump
+```
+or
+```bash
+poetry add python-syringe-pump
 ```
 
 # Usage
