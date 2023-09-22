@@ -1,4 +1,15 @@
+<center>
+
 _Python controller for Legato 100 syringe pump_
+
+
+![Syringe pump](https://raw.githubusercontent.com/Ddedalus/syringe-pump/main/assets/logo/syringe_icon.png)
+
+| ![Tests](https://github.com/Ddedalus/syringe-pump/actions/workflows/test.yml/badge.svg) | [![Test Coverage](https://coveralls.io/repos/github/Ddedalus/syringe-pump/badge.svg?branch=main)](https://coveralls.io/github/Ddedalus/syringe-pump?branch=main) | [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) |
+|:-:|:-:|:-:|
+| [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | [![Latest version](https://badge.fury.io/py/python-syringe-pump.svg)](https://pypi.org/project/python-syringe-pump/) | [![GitHub issues](https://img.shields.io/github/issues/ddedalus/syringe-pump)]()
+
+</center>
 
 Control a syringe pumpt (e.g. Legato 100) using a computer.
 This package uses a COM port to communicate with the pump via an USB cable.
@@ -157,3 +168,7 @@ See the [examples](examples) folder for more examples.
 # Development
 
 Have a look at [CONTRIBUTING.md](CONTRIBUTING.md) for more information on the scope of the project and how to contribute.
+
+# Credits
+
+Project logo: [Freepik @ Flaticon.com](https://www.flaticon.com/free-icons/syringe)

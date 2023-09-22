@@ -10,31 +10,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        # with:
-          # python-version: "3.11"
+
       - name: Install poetry
         run: |
           pip install poetry
           poetry config virtualenvs.in-project true
+
       - name: Set up cache for dependencies
         uses: actions/cache@v1
         id: cache
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Ensure cache is healthy
         if: steps.cache.outputs.cache-hit == 'true'
         run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
+
       - name: Install Dependencies
         run: poetry install --with dev
-      - name: Run pytest
-        run: |
-          poetry run pytest --offline --motion
-          poetry run isort . --check-only --diff
-      # - name: Upload coverage
-      #   uses: codecov/codecov-action@v1
-  black:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: psf/black@stable
+
+      - name: isort
+        run: poetry run isort . --check-only --diff
+
+      - name: black
+        run: poetry run black . --check
+
+      - name: pytest
+        run: poetry run pytest --offline --motion
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
