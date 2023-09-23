@@ -169,6 +169,26 @@ await pump.syringe.set_manufacturer(Manufacturer.HOSHI, Quantity("1 ml"))
 # Examples
 See the [examples](https://github.com/Ddedalus/syringe-pump/tree/main/examples) folder for more examples.
 
+### Pump.infusion_volume and Pump.withdrawal_volume
+Allows you to inspect and reset the volume dispensed by the pump.
+The pump keeps track of the volume since last reset by itself.
+
+Methods:
+ * `get`
+ * `clear`
+
+### Pump.target_volume
+Allows you to set a volume after which the pump will stop by itself.
+This is useful to prevent the pump from over-dispensing and damaging the syringe.
+
+Methods:
+ * `set`
+ * `clear`
+ * `get` - returns the target volume or `None` if not set
+
+Note that there is only one target volume across infusion and withdrawal.
+Negative values are not allowed.
+
 # Development
 
 Have a look at [CONTRIBUTING.md](https://github.com/Ddedalus/syringe-pump/blob/main/CONTRIBUTING.md) for more information on the scope of the project and how to contribute.
