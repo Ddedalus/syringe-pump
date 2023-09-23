@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 from quantiphy import Quantity
 
+from syringe_pump.exceptions import PumpCommandError
 from syringe_pump.response_parser import extract_quantity, extract_string
 
 if TYPE_CHECKING:
@@ -45,11 +46,16 @@ class TargetVolume:
     async def set(self, volume: Quantity):
         """Set the target volume."""
         _check_volume(volume)
-        return await self._pump._write(f"tvolume {volume:.4}")
+        try:
+            await self._pump._write(f"tvolume {volume:.4}")
+        except PumpCommandError as e:
+            if "out of range" in str(e):
+                raise ValueError("Target volume out of range") from e
+            raise e
 
 
 def _check_volume(volume: Quantity):
-    # if volume.real <= 0:
-    # raise ValueError("Volume must be positive.")
+    if volume.real <= 0:
+        raise ValueError("Volume must be positive.")
     if volume.units != "l":
         raise ValueError("Target volume must be in (mili)liters.")

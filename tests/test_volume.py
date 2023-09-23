@@ -30,6 +30,20 @@ async def test_target_set_get(pump: Pump, rng: Random):
     assert round(target, 3) == round(new_target, 3)
 
 
+@pytest.mark.parametrize(
+    "quantity",
+    [
+        "1.0 ml/min",
+        "-1.0 ml",
+        "2000 ml",
+        "0.0 ml",
+    ],
+)
+async def test_target_error(pump: Pump, quantity: str):
+    with pytest.raises(ValueError):
+        await pump.target_volume.set(Quantity(quantity))
+
+
 async def test_target_set_get_int(pump: Pump):
     await pump.target_volume.set(Quantity("1.0 ml"))
     target = await pump.target_volume.get()

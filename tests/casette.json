@@ -143,6 +143,9 @@
     "@tvolume 199.49 ul\r\n": [
         "\n:\u0011"
     ],
+    "@tvolume 2 l\r\n": [
+        "\nArgument error: 2\r\n   Target volume out of range\r\n:\u0011"
+    ],
     "@tvolume 1 ml\r\n": [
         "\n:\u0011"
     ],
