@@ -23,11 +23,11 @@ async def test_clear_target_volume(pump: Pump):
 
 
 async def test_target_set_get(pump: Pump, rng: Random):
-    new_target = rng.uniform(1e-4, 2e-3)
-    await pump.target_volume.set(Quantity(f"{new_target} l"))
+    new_target = rng.uniform(1e-1, 2)
+    await pump.target_volume.set(Quantity(f"{new_target} ml"))
     target = await pump.target_volume.get()
     assert target is not None
-    assert round(target, 3) == round(new_target, 3)
+    assert round(target, 3) == round(new_target * 1e-3, 3)
 
 
 @pytest.mark.parametrize(
