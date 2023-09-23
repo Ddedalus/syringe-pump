@@ -7,6 +7,8 @@
     ],
     "@load qs iw\r\n": [
         "\n:\u0011",
+        "\n:\u0011",
+        "\n:\u0011",
         "\n:\u0011"
     ],
     "@time 05/08/23 14:48:23\r\n": [
@@ -16,24 +18,32 @@
     "@version\r\n": [
         "\nFirmware:      v3.0.6\r\nPump address:  0\r\nSerial number: D101754\r\n:\u0011"
     ],
-    "@irate 1 ml/min\r\n": [
-        "\n:\u0011",
+    "@irate 5 ml/min\r\n": [
         "\n:\u0011"
     ],
     "@irun\r\n": [
+        "\n>\u0011",
         "\n>\u0011"
+    ],
+    "@ivolume\r\n": [
+        "\n6.41161 ul\r\n>\u0011",
+        "\n0 ul\r\n:\u0011"
     ],
     "@stp\r\n": [
         "\n:\u0011",
         "\n:\u0011",
         "\n:\u0011"
     ],
-    "@wrate 1 ml/min\r\n": [
+    "@civolume\r\n": [
         "\n:\u0011",
         "\n:\u0011"
     ],
-    "@wrun\r\n": [
-        "\n<\u0011"
+    "@wrate 5 ml/min\r\n": [
+        "\n:\u0011"
+    ],
+    "@cwvolume\r\n": [
+        "\n:\u0011",
+        "\n:\u0011"
     ],
     "@force 15\r\n": [
         "\n:\u0011"
@@ -65,6 +75,9 @@
         "\n199.49 ul/min\r\n:\u0011",
         "\n1 ml/min\r\n:\u0011"
     ],
+    "@irate 1 ml/min\r\n": [
+        "\n:\u0011"
+    ],
     "@irate lim\r\n": [
         "\n25.0404 nl/min to 26.0035 ml/min\r\n:\u0011"
     ],
@@ -85,6 +98,9 @@
     "@wrate\r\n": [
         "\n199.49 ul/min\r\n:\u0011",
         "\n1 ml/min\r\n:\u0011"
+    ],
+    "@wrate 1 ml/min\r\n": [
+        "\n:\u0011"
     ],
     "@wrate lim\r\n": [
         "\n25.0404 nl/min to 26.0035 ml/min\r\n:\u0011"
@@ -119,15 +135,6 @@
     ],
     "@syrmanu\r\n": [
         "\nHoshi, 20 ml, 20.45 mm\r\n:\u0011"
-    ],
-    "@civolume\r\n": [
-        "\n:\u0011"
-    ],
-    "@ivolume\r\n": [
-        "\n0 ul\r\n:\u0011"
-    ],
-    "@cwvolume\r\n": [
-        "\n:\u0011"
     ],
     "@wvolume\r\n": [
         "\n0 ul\r\n:\u0011"

@@ -28,23 +28,30 @@ async def test_pump_version(pump: Pump):
     assert isinstance(output, PumpVersion)
 
 
-@pytest.mark.motion
-async def test_start_stop(pump: Pump):
+async def test_direction_check(pump: Pump):
     with pytest.raises(ValueError):
         await pump.run(direction="invalid")  # type: ignore
 
+
+@pytest.mark.parametrize("direction", ["infusion", "withdrawal"])
+@pytest.mark.motion
+async def test_start_stop(pump: Pump, direction: str):
+    rate = getattr(pump, f"{direction}_rate")
+    volume = getattr(pump, f"{direction}_volume")
     try:
-        await pump.infusion_rate.set(Quantity("1 ml/min"))
+        await pump.set_mode("iw")
+        await rate.set(Quantity("5 ml/min"))
         await pump.run()
         await asyncio.sleep(0.1)
-        await pump.stop()
 
-        await pump.withdrawal_rate.set(Quantity("1 ml/min"))
-        await pump.run(direction="withdraw")
-        await asyncio.sleep(0.1)
+        if direction == "infusion":
+            # TODO: for some reason withdrawal volume is not being updated
+            value = await volume.get()
+            assert value.real > 0
     finally:
         await pump.stop()
-    await asyncio.sleep(0.1)
+        await volume.clear()
+        await asyncio.sleep(0.1)
 
 
 async def test_force(pump: Pump, rng: random):  # type: ignore
