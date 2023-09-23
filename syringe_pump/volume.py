@@ -1,0 +1,55 @@
+from typing import TYPE_CHECKING, Optional
+
+from quantiphy import Quantity
+
+from syringe_pump.response_parser import extract_quantity, extract_string
+
+if TYPE_CHECKING:
+    from .pump import Pump
+
+
+class Volume:
+    def __init__(self, pump: "Pump", letter: str = "i") -> None:
+        self.letter = letter
+        self._pump = pump
+
+    async def clear(self):
+        """Clear the volume dispensed counter."""
+        await self._pump._write(f"c{self.letter}volume")
+
+    async def get(self):
+        """Get the volume dispensed."""
+        output = await self._pump._write(f"{self.letter}volume")
+        volume, _ = extract_quantity(output.message[0])
+        return volume
+
+
+class TargetVolume:
+    """Expose methods to manage a target volume."""
+
+    def __init__(self, pump: "Pump") -> None:
+        self._pump = pump
+
+    async def clear(self):
+        """Clear the target volume."""
+        await self._pump._write(f"ctvolume")
+
+    async def get(self) -> Optional[Quantity]:
+        """Get the currently set target volume."""
+        output = await self._pump._write(f"tvolume")
+        if "Target volume not set" in output.message[0]:
+            return None
+        volume, _ = extract_quantity(output.message[0])
+        return volume
+
+    async def set(self, volume: Quantity):
+        """Set the target volume."""
+        _check_volume(volume)
+        return await self._pump._write(f"tvolume {volume:.4}")
+
+
+def _check_volume(volume: Quantity):
+    # if volume.real <= 0:
+    # raise ValueError("Volume must be positive.")
+    if volume.units != "l":
+        raise ValueError("Target volume must be in (mili)liters.")

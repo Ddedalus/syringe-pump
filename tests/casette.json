@@ -120,6 +120,32 @@
     "@syrmanu\r\n": [
         "\nHoshi, 20 ml, 20.45 mm\r\n:\u0011"
     ],
+    "@civolume\r\n": [
+        "\n:\u0011"
+    ],
+    "@ivolume\r\n": [
+        "\n0 ul\r\n:\u0011"
+    ],
+    "@cwvolume\r\n": [
+        "\n:\u0011"
+    ],
+    "@wvolume\r\n": [
+        "\n0 ul\r\n:\u0011"
+    ],
+    "@ctvolume\r\n": [
+        "\n:\u0011"
+    ],
+    "@tvolume\r\n": [
+        "\nTarget volume not set\r\n:\u0011",
+        "\n199.49 ul\r\n:\u0011",
+        "\n1 ml\r\n:\u0011"
+    ],
+    "@tvolume 199.49 ul\r\n": [
+        "\n:\u0011"
+    ],
+    "@tvolume 1 ml\r\n": [
+        "\n:\u0011"
+    ],
     "@dim 15\r\n": [
         "\n:\u0011"
     ]

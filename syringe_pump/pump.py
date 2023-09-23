@@ -11,6 +11,7 @@ from syringe_pump.exceptions import PumpError
 from syringe_pump.rate import Rate
 from syringe_pump.serial_interface import PumpSerial
 from syringe_pump.syringe import Syringe
+from syringe_pump.volume import TargetVolume, Volume
 
 logger = getLogger(__name__)
 
@@ -39,6 +40,18 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
     @cached_property
     def syringe(self) -> Syringe:
         return Syringe(pump=self)
+
+    @cached_property
+    def infusion_volume(self) -> Volume:
+        return Volume(pump=self, letter="i")
+
+    @cached_property
+    def withdrawal_volume(self) -> Volume:
+        return Volume(pump=self, letter="w")
+
+    @cached_property
+    def target_volume(self) -> TargetVolume:
+        return TargetVolume(pump=self)
 
     @classmethod
     async def from_serial(cls, serial: aioserial.AioSerial):
