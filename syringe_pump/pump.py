@@ -11,6 +11,7 @@ from syringe_pump.exceptions import PumpError
 from syringe_pump.rate import Rate
 from syringe_pump.serial_interface import PumpSerial
 from syringe_pump.syringe import Syringe
+from syringe_pump.time import TargetTime
 from syringe_pump.volume import TargetVolume, Volume
 
 logger = getLogger(__name__)
@@ -59,6 +60,11 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
         """Clear, get or set the maximum volume the pump is allowed to dispense."""
         return TargetVolume(pump=self)
 
+    @cached_property
+    def target_time(self) -> TargetTime:
+        """Clear, get or set the maximum time the pump is allowed to dispense."""
+        return TargetTime(pump=self)
+
     @classmethod
     async def from_serial(cls, serial: aioserial.AioSerial):
         """Initialise the pump outside of a context manager. Useful for quick scripts."""
@@ -69,7 +75,7 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
     async def _initialise(self):
         await super()._initialise()
         await self.set_mode("iw")  # set pump to infusion and withdrawal mode
-        await self.set_time()  # set pump time to current time
+        await self.set_clock()  # set pump time to current time
 
     async def __aenter__(self):
         await self._initialise()
@@ -124,8 +130,8 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
         output = await self._write(f"addr {address}")
         return output.address
 
-    async def set_time(self):
-        """Set the pump time to the current time."""
+    async def set_clock(self):
+        """Set the pump internal clock to the current time."""
         # Accepted format:  mm/dd/yy hh:mm:ss
         now = datetime.now().strftime("%m/%d/%y %H:%M:%S")
         response = await self._write(f"time {now}")

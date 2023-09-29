@@ -26,7 +26,11 @@ class PumpResponse(BaseModel):
             raise PumpError("No response from pump")
 
         self = cls(raw_text=output, command=command)
-        lines = [self._strip_address(l) for l in output.split("\r\n")]
+        lines = output.split("\r\n")
+        if lines:
+            self._strip_address(lines[-1])
+        if self.address:
+            lines = [self._strip_address(l) for l in lines]
 
         if lines[-1]:  # there is prompt in last line, because there is no address
             self.prompt = lines[-1]
