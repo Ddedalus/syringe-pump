@@ -17,7 +17,12 @@ class PumpSerial:
         self._initialised = True
         await self._write("poll on")
         # disable NVRAM storage which could be damaged by repeated writes
-        await self._write("nvram none")
+        try:
+            await self._write("nvram none")
+        except PumpCommandError as e:  # Discrepancy between certain pump models
+            if "Argument error: none" in e.response.message[0]:
+                await self._write("nvram off")
+            raise e
 
     async def _write(self, command: str):
         # TODO: configure whether screen is refreshed on command

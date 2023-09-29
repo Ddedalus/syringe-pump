@@ -68,7 +68,7 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
     @classmethod
     async def from_serial(cls, serial: aioserial.AioSerial):
         """Initialise the pump outside of a context manager. Useful for quick scripts."""
-        self = Pump(serial=serial)
+        self = cls(serial=serial)
         await self._initialise()
         return self
 
