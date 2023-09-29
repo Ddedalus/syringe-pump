@@ -2,7 +2,7 @@ from datetime import timedelta
 
 import pytest
 
-from syringe_pump import Pump, Quantity
+from syringe_pump import Pump
 
 
 @pytest.mark.parametrize(

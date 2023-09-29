@@ -1,6 +1,6 @@
 """ Control the times configurable in the syringe pump, e.g. target time. """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from syringe_pump.response_parser import extract_quantity
