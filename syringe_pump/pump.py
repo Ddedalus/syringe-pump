@@ -106,17 +106,17 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
 
     async def stop(self):
         """Stop infusing or withdrawing."""
-        await self._write("stp")
+        await self._write("stp", error_state_ok=True)
 
     async def set_brightness(self, brightness: int):
         """Adjust brightness of the built-in pump display. Set to 0 to turn off the display."""
         if brightness < 0 or brightness > 100:
             raise PumpError("Brightness must be integer between 0 and 100")
-        await self._write(f"dim {brightness}")
+        await self._write(f"dim {brightness}", error_state_ok=True)
 
     async def version(self) -> PumpVersion:
         """See pump version and serial number."""
-        output = await self._write("version")
+        output = await self._write("version", error_state_ok=True)
         data = _parse_colon_mapping(output.message)
         return PumpVersion(**data)
 
@@ -133,23 +133,23 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
     async def set_address(self, address: int):
         if address < 0 or address > 99:
             raise ValueError("Address must be integer between 0 and 99")
-        output = await self._write(f"addr {address}")
+        output = await self._write(f"addr {address}", error_state_ok=True)
         return output.address
 
     async def set_clock(self):
         """Set the pump internal clock to the current time."""
         # Accepted format:  mm/dd/yy hh:mm:ss
         now = datetime.now().strftime("%m/%d/%y %H:%M:%S")
-        response = await self._write(f"time {now}")
+        response = await self._write(f"time {now}", error_state_ok=True)
         return response.message[0]
 
     async def set_mode(self, mode: QS_MODE_CODE = "iw"):
         """Set the Quick Start mode, enabling / disabling infusion and withdrawal."""
-        return await self._write(f"load qs {mode}")
+        return await self._write(f"load qs {mode}", error_state_ok=True)
 
     async def get_mode(self) -> str:
         """Get the current pump mode."""
-        output = await self._write("load")
+        output = await self._write("load", error_state_ok=True)
         return output.message[0]
 
 
