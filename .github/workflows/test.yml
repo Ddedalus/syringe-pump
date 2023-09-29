@@ -41,7 +41,7 @@ jobs:
         run: poetry run black . --check
 
       - name: pytest
-        run: poetry run pytest --offline --motion
+        run: poetry run pytest --offline --motion --cov=syringe_pump
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2

@@ -30,7 +30,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-addopts = "--cov=syringe_pump --cov-report=lcov --no-cov" 
+addopts = "--cov-report=lcov" 
 
 
 [tool.isort]
