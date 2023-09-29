@@ -1,5 +1,4 @@
 import re
-from typing import List, Tuple
 
 from pydantic import BaseModel, Field
 from quantiphy import Quantity
@@ -16,7 +15,7 @@ class PumpResponse(BaseModel):
     command: str
     prompt: str = ":"
     address: int = Field(default=0, ge=0, le=99)
-    message: List[str] = []
+    message: list[str] = []
     raw_text: str = ""
 
     @classmethod
@@ -45,7 +44,7 @@ class PumpResponse(BaseModel):
         return line
 
 
-def extract_quantity(line: str) -> Tuple[Quantity, str]:
+def extract_quantity(line: str) -> tuple[Quantity, str]:
     """Extract a value and unit from a line of text."""
     try:
         value, unit, *rest = line.split(" ")

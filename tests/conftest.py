@@ -3,16 +3,17 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Protocol, Union
+from typing import Protocol
 from unittest import mock
 
 import aioserial
 import pytest
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 from syringe_pump import Pump
 from syringe_pump.response_parser import PumpResponse
-from tests.pytest_config import (
+from tests.pytest_config import (  # noqa: F401; fixtures defined elsewhere for convenience
     pytest_addoption,
     pytest_collection_modifyitems,
     pytest_configure,
@@ -27,9 +28,9 @@ def event_loop():
 
 
 class ConnectionSettings(BaseSettings):
-    port: str = Field(default="COM3", env="SYRINGE_PUMP_PORT")
-    baudrate: int = Field(default=115200, env="SYRINGE_PUMP_BAUDRATE")
-    timeout: float = Field(default=2, env="SYRINGE_PUMP_TIMEOUT")
+    port: str = Field(default="COM3", validation_alias="SYRINGE_PUMP_PORT")
+    baudrate: int = Field(default=115200, validation_alias="SYRINGE_PUMP_BAUDRATE")
+    timeout: float = Field(default=2, validation_alias="SYRINGE_PUMP_TIMEOUT")
 
 
 class SpySerial(aioserial.AioSerial):
@@ -37,7 +38,7 @@ class SpySerial(aioserial.AioSerial):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.io_mapping: Dict[str, List[str]] = defaultdict(list)
+        self.io_mapping: dict[str, list[str]] = defaultdict(list)
         self._most_recent_command: str = ""
 
     async def write_async(self, data) -> int:
@@ -60,7 +61,7 @@ class OfflineSerial(aioserial.AioSerial):
     def __init__(self, casette: Path, **kwargs) -> None:
         super().__init__(**kwargs)
         with casette.open("r") as f:
-            self.io_mapping: Dict[str, List[str]] = json.load(f)
+            self.io_mapping: dict[str, list[str]] = json.load(f)
         self._next_response: str = ""
 
     async def write_async(self, data) -> int:

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from quantiphy import Quantity
 
@@ -61,7 +61,7 @@ class Syringe:
         await self._pump._write(f"svolume {volume:.4}")
 
     async def set_manufacturer(
-        self, manufacturer: Manufacturer, volume: Optional[Quantity] = None
+        self, manufacturer: Manufacturer, volume: Quantity | None = None
     ):
         """Set syringe manufacturer and volume."""
         try:

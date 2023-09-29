@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
 from quantiphy import Quantity
@@ -13,6 +13,10 @@ class RateRampInfo(BaseModel):
     start: Quantity
     end: Quantity
     duration: float
+
+    model_config = {
+        "arbitrary_types_allowed": True,
+    }
 
 
 class Rate:
@@ -34,7 +38,7 @@ class Rate:
         _check_rate(rate)
         return await self._pump._write(f"{self.letter}rate {rate:.4}")
 
-    async def get_limits(self) -> Tuple[Quantity, Quantity]:
+    async def get_limits(self) -> tuple[Quantity, Quantity]:
         """Get the minimum and maximum rate of infusion or withdrawal in ml/min."""
         command = f"{self.letter}rate lim"
         output = await self._pump._write(command)  # e.g. .0404 nl/min to 26.0035 ml/min
@@ -43,7 +47,7 @@ class Rate:
         high, _ = extract_quantity(line)
         return low, high
 
-    async def get_ramp(self) -> Optional[RateRampInfo]:
+    async def get_ramp(self) -> RateRampInfo | None:
         """Get information about current ramp, i.e. linear change of pump speed"""
         output = await self._pump._write(f"{self.letter}ramp")
         if "Ramp not set up." in output.message[0]:
