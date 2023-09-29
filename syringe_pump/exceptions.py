@@ -21,7 +21,7 @@ class PumpCommandError(PumpError):
         message = "\n".join(self.response.message)
         return (
             f"Got {message!r} while executing {self.response.command!r}\n"
-            f"{self.response.dict()!r}"
+            f"{self.response.model_dump()!r}"
         )
 
 
