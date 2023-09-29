@@ -93,7 +93,7 @@ async def test_address(pump: Pump, rng: random):  # type: ignore
 
 
 async def test_time(pump: Pump):
-    time = await pump.set_time()
+    time = await pump.set_clock()
     assert ":" in time
     assert "PM" in time or "AM" in time
     assert "/" in time

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from quantiphy import Quantity
 
 from syringe_pump.exceptions import PumpCommandError
-from syringe_pump.response_parser import extract_quantity, extract_string
+from syringe_pump.response_parser import extract_quantity
 
 if TYPE_CHECKING:
     from .pump import Pump

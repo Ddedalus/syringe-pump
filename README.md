@@ -190,6 +190,23 @@ Methods:
 Note that there is only one target volume across infusion and withdrawal.
 Negative values are not allowed.
 
+### Pump.target_time
+Allows you to set a time after which the pump will stop by itself.
+The time is represented as a `datetime.timedelta` object.
+
+Methods:
+ * `set`
+ * `clear`
+ * `get` - returns the target time or `None` if not set
+
+Example:
+```python
+from datetime import timedelta
+await pump.target_time.set(timedelta(hours=2, minutes=10))
+```
+
+**Note**: it seems the pumpt can only handle target time or target volume, but not both.
+
 # Development
 
 Have a look at [CONTRIBUTING.md](https://github.com/Ddedalus/syringe-pump/blob/main/CONTRIBUTING.md) for more information on the scope of the project and how to contribute.
