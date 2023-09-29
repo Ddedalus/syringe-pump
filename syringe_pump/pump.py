@@ -2,7 +2,7 @@ from contextlib import AbstractAsyncContextManager
 from datetime import datetime
 from functools import cached_property
 from logging import getLogger
-from typing import List, Literal
+from typing import Literal
 
 import aioserial
 from pydantic import BaseModel, Field
@@ -153,7 +153,7 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
         return output.message[0]
 
 
-def _parse_colon_mapping(lines: List[str]):
+def _parse_colon_mapping(lines: list[str]):
     data = {}
     for line in lines:
         key, val = line.split(":", 1)

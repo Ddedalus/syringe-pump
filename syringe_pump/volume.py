@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from quantiphy import Quantity
 
@@ -35,7 +35,7 @@ class TargetVolume:
         """Clear the target volume."""
         await self._pump._write(f"ctvolume")
 
-    async def get(self) -> Optional[Quantity]:
+    async def get(self) -> Quantity | None:
         """Get the currently set target volume."""
         output = await self._pump._write(f"tvolume")
         if "Target volume not set" in output.message[0]:

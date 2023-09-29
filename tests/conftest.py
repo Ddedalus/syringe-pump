@@ -3,7 +3,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Protocol
+from typing import Protocol
 from unittest import mock
 
 import aioserial
@@ -38,7 +38,7 @@ class SpySerial(aioserial.AioSerial):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.io_mapping: Dict[str, List[str]] = defaultdict(list)
+        self.io_mapping: dict[str, list[str]] = defaultdict(list)
         self._most_recent_command: str = ""
 
     async def write_async(self, data) -> int:
@@ -61,7 +61,7 @@ class OfflineSerial(aioserial.AioSerial):
     def __init__(self, casette: Path, **kwargs) -> None:
         super().__init__(**kwargs)
         with casette.open("r") as f:
-            self.io_mapping: Dict[str, List[str]] = json.load(f)
+            self.io_mapping: dict[str, list[str]] = json.load(f)
         self._next_response: str = ""
 
     async def write_async(self, data) -> int:
