@@ -34,14 +34,13 @@ Copy-paste this to get going!
 ```python
 import asyncio
 import aioserial
-from syringe_pump import Pump
-from quantity import Quantity
+from syringe_pump import Pump, Quantity
 
 async def main():
     serial = aioserial.AioSerial(port="COM4", baudrate=115200, timeout=2)
     async with Pump(serial=serial) as pump:
-        await pump.set_rate(Quantity("1 ml/min"))
-        await pump.start()
+        await pump.infusion_rate.set(Quantity("1 ml/min"))
+        await pump.run()
         await asyncio.sleep(10)
     # pump will stop when exiting the context manager
 
@@ -69,8 +68,8 @@ However, the benefits will be worth it, especially when working with multiple pu
 from syringe_pump import Pump, Quantity
 
 pump = await Pump.from_serial(serial=serial)
-await pump.set_rate(Quantity("1 ml/min"))
-await pump.start()
+await pump.infusion_rate.set(Quantity("1 ml/min"))
+await pump.run()
 ```
 
 **Note**: The `from_serial` class method will configure the pump to
@@ -88,8 +87,8 @@ automatically stop the pump in case of an error or at the end of the program.
 from syringe_pump import Pump, Quantity
 
 async with Pump(serial=serial) as pump:
-    await pump.set_rate(Quantity("1 ml/min"))
-    await pump.start()
+    await pump.infusion_rate.set(Quantity("1 ml/min"))
+    await pump.run()
 ```
 
 ### Running async code
@@ -98,6 +97,7 @@ you need to use the `asyncio.run` function or similar:
 
 ```python
 import asyncio
+# in regular python file:
 
 async def main():
     asyncio.sleep(1)
@@ -110,6 +110,7 @@ asyncio.run(main())
 **Note**: in a jupyter notebook, you can use `await` directly in the cell:
 
 ```python
+# in jupyter notebook only:
 await main()
 ```
 
@@ -141,7 +142,7 @@ Next, the pump controller has some properties that allow you to manage other par
 ### Pump.infusion_rate and Pump.withdrawal_rate
 The pump flow rates can be controlled here, including ramping.
 Common methods available are:
- * `set_rate` and `get_rate`
+ * `set` and `get`
  * `set_ramp(start, end, duration)`
 
 Example:

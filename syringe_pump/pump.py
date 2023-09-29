@@ -31,30 +31,37 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
 
     @cached_property
     def infusion_rate(self) -> Rate:
+        """Get, set or clear the infusion rate."""
         return Rate(pump=self, letter="i")
 
     @cached_property
     def withdrawal_rate(self) -> Rate:
+        """Get, set or clear the withdrawal rate."""
         return Rate(pump=self, letter="w")
 
     @cached_property
     def syringe(self) -> Syringe:
+        """View or edit the syringe properties that are used to calculate flow rates and volumes."""
         return Syringe(pump=self)
 
     @cached_property
     def infusion_volume(self) -> Volume:
+        """Reset or get the infusion volume that the pump keeps track of."""
         return Volume(pump=self, letter="i")
 
     @cached_property
     def withdrawal_volume(self) -> Volume:
+        """Reset or get the withdrawal volume that the pump keeps track of."""
         return Volume(pump=self, letter="w")
 
     @cached_property
     def target_volume(self) -> TargetVolume:
+        """Clear, get or set the maximum volume the pump is allowed to dispense."""
         return TargetVolume(pump=self)
 
     @classmethod
     async def from_serial(cls, serial: aioserial.AioSerial):
+        """Initialise the pump outside of a context manager. Useful for quick scripts."""
         self = Pump(serial=serial)
         await self._initialise()
         return self
@@ -77,6 +84,7 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
         self._initialised = False
 
     async def run(self, direction: Literal["infuse", "withdraw"] = "infuse"):
+        """Start infusing or withdrawing. You need to set a rate first."""
         if direction == "infuse":
             await self._write("irun")
         elif direction == "withdraw":
@@ -85,19 +93,23 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
             raise ValueError("Direction must be 'infuse' or 'withdraw'")
 
     async def stop(self):
+        """Stop infusing or withdrawing."""
         await self._write("stp")
 
     async def set_brightness(self, brightness: int):
+        """Adjust brightness of the built-in pump display. Set to 0 to turn off the display."""
         if brightness < 0 or brightness > 100:
             raise PumpError("Brightness must be integer between 0 and 100")
         await self._write(f"dim {brightness}")
 
     async def version(self) -> PumpVersion:
+        """See pump version and serial number."""
         output = await self._write("version")
         data = _parse_colon_mapping(output.message)
         return PumpVersion(**data)
 
     async def set_force(self, force: int):
+        """Set the percentage of the maximum force to use when dispensing."""
         if force < 0 or force > 100:
             raise ValueError("Force must be integer between 0 and 100")
         await self._write(f"force {force}")
@@ -113,6 +125,7 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
         return output.address
 
     async def set_time(self):
+        """Set the pump time to the current time."""
         # Accepted format:  mm/dd/yy hh:mm:ss
         now = datetime.now().strftime("%m/%d/%y %H:%M:%S")
         response = await self._write(f"time {now}")
