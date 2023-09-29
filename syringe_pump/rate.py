@@ -14,6 +14,10 @@ class RateRampInfo(BaseModel):
     end: Quantity
     duration: float
 
+    model_config = {
+        "arbitrary_types_allowed": True,
+    }
+
 
 class Rate:
     """Expose methods to manage a rate of infusion or withdrawal."""
