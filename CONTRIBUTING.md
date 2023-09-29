@@ -1,7 +1,7 @@
 # Project scope
 
 ## In scope
- * support for Legato 100 syringe pump
+ * support for Legato 100 & Legato 101 syringe pumps
 
 ## Contributions welcome
  * check compatibility with other syringe pumps

@@ -30,6 +30,19 @@ EXIT_BRIGHTNESS = 15
 class Pump(PumpSerial, AbstractAsyncContextManager):
     """High-level interface for the Legato 100 syringe pump."""
 
+    @classmethod
+    async def from_serial(cls, serial: aioserial.AioSerial):
+        """Initialise the pump outside of a context manager. Useful for quick scripts.
+        This method will:
+         * disable NVRAM storage
+         * set the pump to infuse-withdraw mode
+         * ensure the clock on the pump is up to date
+         * configure the serial protocol into a machine-readable format
+        """
+        self = cls(serial=serial)
+        await self._initialise()
+        return self
+
     @cached_property
     def infusion_rate(self) -> Rate:
         """Get, set or clear the infusion rate."""
@@ -64,13 +77,6 @@ class Pump(PumpSerial, AbstractAsyncContextManager):
     def target_time(self) -> TargetTime:
         """Clear, get or set the maximum time the pump is allowed to dispense."""
         return TargetTime(pump=self)
-
-    @classmethod
-    async def from_serial(cls, serial: aioserial.AioSerial):
-        """Initialise the pump outside of a context manager. Useful for quick scripts."""
-        self = Pump(serial=serial)
-        await self._initialise()
-        return self
 
     async def _initialise(self):
         await super()._initialise()
