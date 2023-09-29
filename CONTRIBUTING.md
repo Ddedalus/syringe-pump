@@ -27,3 +27,6 @@ pytest
 pytest --offline
 pytest --motion
 ```
+
+**Note**: we use `pytest-cov` for coverage reporting.
+The coverage uses a debugger mechanism, so in order to debug, you need to disable coverage with `--no-cov`. 
