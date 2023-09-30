@@ -1,5 +1,4 @@
 import aioserial
-from typing_extensions import Protocol
 
 from syringe_pump.exceptions import *
 from syringe_pump.response_parser import XON, PumpResponse
