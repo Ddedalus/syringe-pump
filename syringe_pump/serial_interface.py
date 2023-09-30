@@ -32,7 +32,8 @@ class PumpSerial:
         response, state_ok = await self._parse_prompt(command=command)
         if state_ok or error_state_ok:
             return response
-        raise PumpStateError(response)
+
+        raise PumpStateError.from_response(response)
 
     async def _parse_prompt(self, command: str = "") -> tuple[PumpResponse, bool]:
         # relies on poll mode being on
