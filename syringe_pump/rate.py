@@ -29,7 +29,7 @@ class Rate:
     async def get(self) -> Quantity:
         """Get the currently set rate of infusion or withdrawal in ml/min."""
         command = f"{self.letter}rate"
-        output = await self._pump._write(command)
+        output = await self._pump._write(command, error_state_ok=True)
         rate, _ = extract_quantity(output.message[0])
         return rate
 
@@ -41,7 +41,9 @@ class Rate:
     async def get_limits(self) -> tuple[Quantity, Quantity]:
         """Get the minimum and maximum rate of infusion or withdrawal in ml/min."""
         command = f"{self.letter}rate lim"
-        output = await self._pump._write(command)  # e.g. .0404 nl/min to 26.0035 ml/min
+        output = await self._pump._write(
+            command, error_state_ok=True
+        )  # e.g. .0404 nl/min to 26.0035 ml/min
         low, line = extract_quantity(output.message[0])
         line = extract_string(line, "to")
         high, _ = extract_quantity(line)
@@ -49,7 +51,7 @@ class Rate:
 
     async def get_ramp(self) -> RateRampInfo | None:
         """Get information about current ramp, i.e. linear change of pump speed"""
-        output = await self._pump._write(f"{self.letter}ramp")
+        output = await self._pump._write(f"{self.letter}ramp", error_state_ok=True)
         if "Ramp not set up." in output.message[0]:
             return None
         start, line = extract_quantity(output.message[0])

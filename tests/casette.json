@@ -26,7 +26,7 @@
         "\n>\u0011"
     ],
     "@ivolume\r\n": [
-        "\n1.96067 ul\r\n>\u0011",
+        "\n8.46242 ul\r\n>\u0011",
         "\n0 ul\r\n:\u0011"
     ],
     "@stp\r\n": [
@@ -126,13 +126,13 @@
     "@diameter\r\n": [
         "\n7.2620 mm\r\n:\u0011"
     ],
-    "@syrmanu HOSHI 200 ml \r\n": [
+    "@syrmanu HOSHI 200 ml\r\n": [
         "\nArgument error: 200\r\n   Unknown syringe\r\n:\u0011"
     ],
     "@syrmanu HOSHI ?\r\n": [
         "\n1 ml\r\n2 ml\r\n3 ml\r\n5 ml\r\n10 ml\r\n20 ml\r\n30 ml\r\n50 ml\r\n100 ml\r\n:\u0011"
     ],
-    "@syrmanu HOSHI 20 ml \r\n": [
+    "@syrmanu HOSHI 20 ml\r\n": [
         "\n:\u0011"
     ],
     "@syrmanu\r\n": [

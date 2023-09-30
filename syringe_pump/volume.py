@@ -16,11 +16,11 @@ class Volume:
 
     async def clear(self):
         """Clear the volume dispensed counter."""
-        await self._pump._write(f"c{self.letter}volume")
+        await self._pump._write(f"c{self.letter}volume", error_state_ok=True)
 
     async def get(self):
         """Get the volume dispensed."""
-        output = await self._pump._write(f"{self.letter}volume")
+        output = await self._pump._write(f"{self.letter}volume", error_state_ok=True)
         volume, _ = extract_quantity(output.message[0])
         return volume
 
@@ -33,11 +33,11 @@ class TargetVolume:
 
     async def clear(self):
         """Clear the target volume."""
-        await self._pump._write(f"ctvolume")
+        await self._pump._write(f"ctvolume", error_state_ok=True)
 
     async def get(self) -> Quantity | None:
         """Get the currently set target volume."""
-        output = await self._pump._write(f"tvolume")
+        output = await self._pump._write(f"tvolume", error_state_ok=True)
         if "Target volume not set" in output.message[0]:
             return None
         volume, _ = extract_quantity(output.message[0])
