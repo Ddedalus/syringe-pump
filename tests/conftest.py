@@ -91,7 +91,7 @@ def serial(request):
         print("Using offline serial interface")
         yield OfflineSerial(casette=casette_file)
     else:
-        s = SpySerial(**ConnectionSettings().dict())
+        s = SpySerial(**ConnectionSettings().model_dump())
         yield s
         s.persist(casette_file)
 

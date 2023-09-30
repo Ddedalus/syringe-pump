@@ -15,7 +15,7 @@ class TargetTime:
 
     async def get(self) -> timedelta | None:
         """Get the target time as a timedelta object."""
-        output = await self._pump._write("ttime")
+        output = await self._pump._write("ttime", error_state_ok=True)
         message = output.message[0].strip()
         if "Target time not set" in message:
             return None
@@ -57,4 +57,4 @@ class TargetTime:
 
     async def clear(self):
         """Clear the target time."""
-        await self._pump._write("cttime")
+        await self._pump._write("cttime", error_state_ok=True)

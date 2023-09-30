@@ -54,7 +54,7 @@ async def test_rate_ramp(rate: Rate, random_ramp: RateRampInfo):
     with pytest.raises(ValueError):
         await rate.set_ramp(random_ramp.start, random_ramp.end, -1)
 
-    await rate.set_ramp(**random_ramp.dict())
+    await rate.set_ramp(**random_ramp.model_dump())
     ramp = await rate.get_ramp()
 
     assert ramp

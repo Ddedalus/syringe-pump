@@ -43,6 +43,10 @@ class PumpResponse(BaseModel):
             return match.group(3)
         return line
 
+    def __str__(self) -> str:
+        full_response = "\n".join(self.message)
+        return f"Command: {self.command!r}\n Response: {full_response!r}\n"
+
 
 def extract_quantity(line: str) -> tuple[Quantity, str]:
     """Extract a value and unit from a line of text."""
